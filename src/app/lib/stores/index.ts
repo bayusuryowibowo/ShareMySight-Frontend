@@ -2,11 +2,13 @@ import {
   configureStore,
 } from "@reduxjs/toolkit";
 import visibilityReducer from "./reducers/visibility";
+import authReducer from "./reducers/auth";
 
 // create a makeStore function
 export const makeStore = () => configureStore({
   reducer: {
-    visibility: visibilityReducer
+    visibility: visibilityReducer,
+    auth: authReducer
   },
 });
 

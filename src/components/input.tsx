@@ -9,10 +9,8 @@ interface Props {
     error: boolean;
     disabled?: boolean;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    className: string;
     inputClassName?: string;
     labelClassName?: string;
-    wrapperClassName?: string;
 }
 
 const Input: FunctionComponent<Props> = ({
@@ -26,10 +24,9 @@ const Input: FunctionComponent<Props> = ({
     onChange,
     inputClassName,
     labelClassName,
-    wrapperClassName,
 }) => {
     return (
-        <div className={wrapperClassName}>
+        <>
             {label && (
                 <label htmlFor={name} className={labelClassName}>
                     {label}
@@ -46,7 +43,7 @@ const Input: FunctionComponent<Props> = ({
                 className={inputClassName}
             />
             {error && <p className="error">Input field can't be empty!</p>}
-        </div>
+        </>
     );
 };
 

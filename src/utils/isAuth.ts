@@ -1,8 +1,8 @@
 "use client";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAppSelector } from "../lib/hooks";
-import { RootState } from "../lib/stores";
+import { useAppSelector } from "../lib/redux-toolkit/hooks";
+import { RootState } from "../lib/redux-toolkit/stores";
 
 export default function isAuth(Component: any) {
     return function IsAuth(props: any) {

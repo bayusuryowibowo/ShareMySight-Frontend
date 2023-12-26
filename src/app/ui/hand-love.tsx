@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { getIndex, useFlubber } from "../use-flubber";
-import { useAppStore } from "../../lib/hooks";
-import { toggleVisibility } from "../../lib/stores/reducers/visibility";
+import { getIndex, useFlubber } from "../../lib/animations/use-flubber";
+import { useAppStore } from "../../lib/redux-toolkit/hooks";
+import { toggleVisibility } from "../../lib/redux-toolkit/stores/reducers/visibility";
 import {
     colors,
     paths,

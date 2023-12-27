@@ -3,6 +3,8 @@
 import Input from "@/components/input";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
+const URL = process.env.NEXT_PUBLIC_SERVER_URL;
+import axios from "axios";
 
 interface userData {
     email: string;
@@ -19,6 +21,20 @@ export default function LoginPage() {
         const key = e.target.name;
         const value = e.target.value;
         setUserData({ ...userData, [key]: value });
+    };
+
+    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        axios({
+            url: `${URL}/login`,
+            data: userData,
+            method: "POST",
+        })
+            .then((res) => {
+                localStorage.setItem("access_token", res.data?.data?.token);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     return (
@@ -46,7 +62,11 @@ export default function LoginPage() {
                 />
             </div>
             <p className="my-[25px]">Having trouble signing in?</p>
-            <button className="w-full bg-[#FEC887] py-3 font-bold rounded-md">
+            <button
+                type="submit"
+                className="w-full bg-[#FEC887] py-3 font-bold rounded-md"
+                onClick={handleLogin}
+            >
                 Sign In
             </button>
             <p className="my-[40px] text-center">-- Or Sign in with --</p>

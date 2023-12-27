@@ -16,6 +16,6 @@ export default function isAuth(Component: any) {
             }
         }, [isLoggedIn]);
 
-        return Component;
+        return <Component {...props} />;
     };
 }

@@ -1,5 +1,5 @@
 "use client";
-import isAuth from "@/utils/isAuth";
+import isAuth from "@/components/isAuth";
 
 const Page = ({
     home,

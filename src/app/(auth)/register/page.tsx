@@ -4,6 +4,9 @@ import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 import { UserRole } from "./role";
 import SelectOption from "@/components/selectOption";
+import axios from "axios";
+import { redirect } from "next/navigation";
+const URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 interface userData {
     email: string;
@@ -25,6 +28,23 @@ const RegisterPage = () => {
         const value = e.target.value;
         setUserData({ ...userData, [key]: value });
     };
+
+    const handleRegister = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        axios({
+            url: `${URL}/register`,
+            method: "POST",
+            data: userData,
+        })
+            .then((res) => {
+                console.log("success");
+                redirect("/login");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    console.log(userData);
 
     return (
         <>
@@ -102,7 +122,10 @@ const RegisterPage = () => {
                     className="placeholder:text-[#606060] focus:outline-none"
                 />
             </div>
-            <button className="w-full bg-[#FEC887] py-3 font-bold rounded-md mt-[40px]">
+            <button
+                className="w-full bg-[#FEC887] py-3 font-bold rounded-md mt-[40px]"
+                onClick={handleRegister}
+            >
                 Register
             </button>
             <p className="text-center mt-4">

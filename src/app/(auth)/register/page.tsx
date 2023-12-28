@@ -1,22 +1,43 @@
 "use client";
 import Input from "@/components/input";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { UserRole } from "./role";
 import SelectOption from "@/components/selectOption";
 import axios from "axios";
-import { redirect } from "next/navigation";
 const URL = process.env.NEXT_PUBLIC_SERVER_URL;
+import ErrorHandler from "@/utils/errorHandling";
+import { apiClient } from "@/utils/axios";
+import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
+import useFetch from "@/hooks/useFetch";
 
-interface userData {
+interface UserData {
     email: string;
     password: string;
     role: UserRole;
     languageId: string;
 }
 
+interface LanguageOptions {
+    label: string;
+    value: string;
+}
+
 const RegisterPage = () => {
-    const [userData, setUserData] = useState<userData>({
+    const cookies = useCookies();
+    const router = useRouter();
+    const languages = useFetch("/language");
+    const languagesOptions: LanguageOptions[] = useMemo(
+        () =>
+            languages.map((language: { id: string; languageName: string }) => ({
+                label: language.languageName,
+                value: language.id,
+            })),
+        [languages]
+    );
+
+    const [userData, setUserData] = useState<UserData>({
         email: "",
         password: "",
         role: UserRole.Volunteer,
@@ -29,19 +50,31 @@ const RegisterPage = () => {
         setUserData({ ...userData, [key]: value });
     };
 
-    const handleRegister = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        axios({
-            url: `${URL}/register`,
-            method: "POST",
-            data: userData,
-        })
-            .then((res) => {
-                console.log("success");
-                redirect("/login");
-            })
-            .catch((err) => {
-                console.log(err);
+    const handleSelectChange = (data: {
+        name: string | undefined;
+        value: unknown;
+    }) => {
+        const name = data.name;
+        const value = data.value;
+
+        if (typeof name === "string") {
+            setUserData({ ...userData, [name]: value });
+        }
+    };
+
+    const handleRegister = async (
+        e: React.MouseEvent<HTMLButtonElement>
+    ): Promise<void> => {
+        try {
+            await apiClient.post("/register", userData, {
+                headers: {
+                    access_token: `Bearer ${cookies.get("access_token")}`,
+                },
             });
+            router.push("/login");
+        } catch (error: any) {
+            ErrorHandler.handleError(error);
+        }
     };
 
     return (
@@ -58,12 +91,13 @@ const RegisterPage = () => {
                             "border-2 border-solid border-[#FEC887] outline-none"
                         }`}
                     >
-                        <input
+                        <Input
                             type="radio"
                             name="role"
                             value={UserRole.Volunteer}
                             onChange={handleOnChange}
-                            className="absolute inset-0 opacity-0"
+                            inputClassName="absolute inset-0 opacity-0"
+                            error={false}
                         />
                         <img
                             src="https://media-public.canva.com/JbmNs/MAFIVoJbmNs/1/tl.png"
@@ -114,10 +148,11 @@ const RegisterPage = () => {
                     inputClassName="border-2 rounded-md py-2 px-3  w-full placeholder:text-[#606060] focus:outline-none"
                 />
                 <SelectOption
-                    options={[{ label: "test", value: "test " }]}
-                    name="language"
+                    options={languagesOptions}
+                    name="languageId"
                     placeholder="Select Language"
                     className="placeholder:text-[#606060] focus:outline-none"
+                    handleSelectChange={handleSelectChange}
                 />
             </div>
             <button

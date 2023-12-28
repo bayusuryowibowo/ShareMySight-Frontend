@@ -1,20 +1,19 @@
+"use client";
 // Importing types for Next.js
 import { ReactNode } from "react";
-import { useRouter } from "next/router";
 import { useCookies } from "next-client-cookies";
 import { createContext } from "react";
+import { useRouter } from "next/navigation";
 
 // Defining the AuthContext type
 type AuthContextType = {
-    isAuthenticated: boolean;
-    login: (token: string) => void;
-    logout: () => void;
+    isAuthenticated?: boolean;
+    login?: (token: string) => void;
+    logout?: () => void;
 };
 
 // Creating the AuthContext with an initial empty object
-export const AuthContext = createContext<AuthContextType | undefined>(
-    undefined
-);
+export const AuthContext = createContext<AuthContextType | any>(undefined);
 
 // AuthProviderProps type for the AuthProvider component
 type AuthProviderProps = {

@@ -1,9 +1,12 @@
 "use client";
 import Input from "@/components/input";
 import Link from "next/link";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 const URL = process.env.NEXT_PUBLIC_SERVER_URL;
-import axios from "axios";
+import { apiClient } from "@/utils/axios";
+import ErrorHandler from "@/utils/errorHandling";
+import { AuthContext } from "@/context/AuthContext";
+import { useCookies } from "next-client-cookies";
 
 interface userData {
     email: string;
@@ -11,6 +14,8 @@ interface userData {
 }
 
 export default function LoginPage() {
+    const cookies = useCookies();
+    const { login } = useContext(AuthContext);
     const [userData, setUserData] = useState<userData>({
         email: "",
         password: "",
@@ -22,18 +27,19 @@ export default function LoginPage() {
         setUserData({ ...userData, [key]: value });
     };
 
-    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        axios({
-            url: `${URL}/login`,
-            data: userData,
-            method: "POST",
-        })
-            .then((res) => {
-                localStorage.setItem("access_token", res.data?.data?.token);
-            })
-            .catch((err) => {
-                console.log(err);
+    const handleLogin = async (
+        e: React.MouseEvent<HTMLButtonElement>
+    ): Promise<void> => {
+        try {
+            const { data } = await apiClient.post("/login", userData, {
+                headers: {
+                    access_token: `Bearer ${cookies.get("access_token")}`,
+                },
             });
+            login(data.data.token);
+        } catch (error: any) {
+            ErrorHandler.handleError(error);
+        }
     };
 
     return (

@@ -1,7 +1,7 @@
 import { ChangeEvent, FunctionComponent } from "react";
 
 interface Props {
-    type: "text" | "number" | "email" | "password";
+    type: "text" | "number" | "email" | "password" | "radio";
     label?: string;
     value?: string | number;
     name: string;

@@ -1,5 +1,8 @@
+"use client";
+
 import { FunctionComponent } from "react";
 import Select from "react-select";
+import { ActionMeta, SingleValue } from "react-select";
 
 type OptionType = { [key: string]: any };
 type OptionsType = Array<OptionType>;
@@ -9,6 +12,10 @@ interface Props {
     options: OptionsType;
     placeholder: string;
     className: string;
+    handleSelectChange: (params: {
+        name: string | undefined;
+        value: unknown;
+    }) => void;
 }
 
 const SelectOption: FunctionComponent<Props> = ({
@@ -16,16 +23,31 @@ const SelectOption: FunctionComponent<Props> = ({
     name,
     placeholder,
     className,
+    handleSelectChange,
 }) => {
+    const id = Date.now().toString();
+
+    const handleOnChange = (
+        selectedOption: SingleValue<OptionType>,
+        actionMeta: ActionMeta<OptionType>
+    ) => {
+        handleSelectChange({
+            name: actionMeta.name,
+            value: selectedOption?.value,
+        });
+    };
+
     return (
         <>
             <Select
+                instanceId={id}
                 className={className}
                 isClearable={true}
                 isSearchable={true}
                 name={name}
                 options={options}
                 placeholder={placeholder}
+                onChange={handleOnChange}
                 styles={{
                     control: (baseStyles, state) => ({
                         ...baseStyles,

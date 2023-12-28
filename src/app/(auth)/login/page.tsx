@@ -1,5 +1,4 @@
 "use client";
-
 import Input from "@/components/input";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";

@@ -44,8 +44,6 @@ const RegisterPage = () => {
             });
     };
 
-    console.log(userData);
-
     return (
         <>
             <div className="text-center font-bold text-4xl">Register</div>

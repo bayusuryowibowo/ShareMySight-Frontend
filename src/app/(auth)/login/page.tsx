@@ -2,7 +2,6 @@
 import Input from "@/components/input";
 import Link from "next/link";
 import { ChangeEvent, useContext, useState } from "react";
-const URL = process.env.NEXT_PUBLIC_SERVER_URL;
 import { apiClient } from "@/utils/axios";
 import ErrorHandler from "@/utils/errorHandling";
 import { AuthContext } from "@/context/AuthContext";

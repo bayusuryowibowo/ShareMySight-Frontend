@@ -4,8 +4,6 @@ import Link from "next/link";
 import { ChangeEvent, useMemo, useState } from "react";
 import { UserRole } from "./role";
 import SelectOption from "@/components/selectOption";
-import axios from "axios";
-const URL = process.env.NEXT_PUBLIC_SERVER_URL;
 import ErrorHandler from "@/utils/errorHandling";
 import { apiClient } from "@/utils/axios";
 import { useRouter } from "next/navigation";

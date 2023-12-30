@@ -15,3 +15,17 @@
         --background-end-rgb: 0, 0, 0;
     }
 }
+
+div#videos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div#videos > video {
+    background: black;
+    width: 550px;
+    height: 100%;
+    display: block;
+    margin: 1em;
+}

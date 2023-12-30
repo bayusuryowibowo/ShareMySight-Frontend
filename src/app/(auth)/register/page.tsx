@@ -7,7 +7,6 @@ import SelectOption from "@/components/selectOption";
 import ErrorHandler from "@/utils/errorHandling";
 import { apiClient } from "@/utils/axios";
 import { useRouter } from "next/navigation";
-import { useCookies } from "next-client-cookies";
 import useFetch from "@/hooks/useFetch";
 
 interface UserData {
@@ -24,7 +23,7 @@ interface LanguageOptions {
 
 const RegisterPage = () => {
     const router = useRouter();
-    const languages = useFetch("/language");
+    const [languages] = useFetch("/language");
     const languagesOptions: LanguageOptions[] = useMemo(
         () =>
             languages.map((language: { id: string; languageName: string }) => ({

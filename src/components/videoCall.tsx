@@ -54,6 +54,7 @@ const VideoCall = () => {
     const roomQuery = await getDocs(roomsCol);
     const videoCallRoom = await videoCallService.getRandomVideoCallRoom();
     if (videoCallRoom) {
+      console.log(videoCallRoom)
       joinRoomById(roomsCol, videoCallRoom.roomId);
       return;
     }

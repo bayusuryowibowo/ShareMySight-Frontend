@@ -18,7 +18,7 @@ class VideoCallService {
 
   public addGeneratedVideoCallRoom = async (roomId: string) => {
     try {
-      const { data } = await apiClient.post(VIDEO_CALL, {});
+      const { data } = await apiClient.post(VIDEO_CALL, { roomId });
       console.log("post video call", data);
       return data.data;
     } catch (error: any) {

@@ -2,18 +2,13 @@
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
-import axios from "axios";
-
-interface MessageHistory {
-    username: string;
-    content: string;
-}
+import useFetch from "@/hooks/useFetch";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
     const [isConnected, setIsConnected] = useState<Boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
-    const [messageHistory, setMessageHistory] = useState<MessageHistory[]>([]);
+    const [messageHistory, setMessageHistory] = useFetch("/chat");
 
     useEffect(() => {
         if (isConnected) {
@@ -68,19 +63,6 @@ const Chat = () => {
         }
     };
 
-    const test = () => {
-        axios({
-            url: "http://localhost:8080/test",
-            withCredentials: true,
-        })
-            .then((response) => {
-                // handle the response
-            })
-            .catch((error) => {
-                // handle the error
-            });
-    };
-
     return (
         <>
             <input
@@ -93,10 +75,12 @@ const Chat = () => {
             <button onClick={handleDisconnect}>disconnect</button>
             <div>
                 {messageHistory.map((msg, index) => (
-                    <div key={index}>{msg.content}</div>
+                    <div key={index}>
+                        <span>{msg?.user?.email}: </span>
+                        {msg.message}
+                    </div>
                 ))}
             </div>
-            <button onClick={test}>test</button>
         </>
     );
 };

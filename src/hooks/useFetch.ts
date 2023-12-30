@@ -1,21 +1,21 @@
 "use client";
 
 import { apiClient } from "@/utils/axios";
-import { useCookies } from "next-client-cookies";
 import { useEffect, useState } from "react";
 import ErrorHandler from "@/utils/errorHandling";
 
+interface ApiResponse {
+    data: any;
+    message: string;
+    status: boolean;
+}
+
 const useFetch = (url: string) => {
-    const cookies = useCookies();
     const [data, setData] = useState([]);
 
     useEffect(() => {
         apiClient
-            .get(url, {
-                headers: {
-                    access_token: `Bearer ${cookies.get("access_token")}`,
-                },
-            })
+            .get<ApiResponse>(url)
             .then(({ data }) => {
                 setData(data.data);
             })
@@ -24,7 +24,7 @@ const useFetch = (url: string) => {
             });
     }, []);
 
-    return data;
+    return [data, setData];
 };
 
 export default useFetch;

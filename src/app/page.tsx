@@ -1,5 +1,7 @@
+import Sidebar from "@/components/sidebar";
+
 const Page = ({}: { home: React.ReactNode; login: React.ReactNode }) => {
-    return <div>Main</div>;
+    return <Sidebar />;
 };
 
 export default Page;

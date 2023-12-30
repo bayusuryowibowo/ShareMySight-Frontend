@@ -4,6 +4,7 @@ services:
     frontend:
         build: .
         container_name: "app_frontend_c"
+        restart: on-failure
         ports:
             - "3000:3000"
         volumes:

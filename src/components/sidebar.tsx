@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import VideoChatOutlinedIcon from "@mui/icons-material/VideoChatOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
+import Link from "next/link";
 
 interface Props {}
 
@@ -14,15 +15,25 @@ const Sidebar: FunctionComponent<Props> = () => {
             <ul className="mt-[40px]">
                 <li className="transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
                     <VideoChatOutlinedIcon />
-                    <div className="inline-block ml-2 text-lg">Live Call</div>
+                    <Link href="/">
+                        <div className="inline-block ml-2 text-lg">
+                            Live Call
+                        </div>
+                    </Link>
                 </li>
                 <li className="mt-[25px] transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
                     <ChatOutlinedIcon />
-                    <div className="inline-block ml-2 text-lg">Live Chat</div>
+                    <Link href="/chat">
+                        <div className="inline-block ml-2 text-lg">
+                            Live Chat
+                        </div>
+                    </Link>
                 </li>
                 <li className="mt-[25px] transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
                     <SmartToyOutlinedIcon />
-                    <div className="inline-block ml-2 text-lg">Ask AI</div>
+                    <Link href="/ai">
+                        <div className="inline-block ml-2 text-lg">Ask AI</div>
+                    </Link>
                 </li>
             </ul>
         </div>

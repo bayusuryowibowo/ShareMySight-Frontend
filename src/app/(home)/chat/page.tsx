@@ -64,24 +64,42 @@ const Chat = () => {
     };
 
     return (
-        <>
-            <input
-                type="text"
-                value={currentMessage}
-                onChange={handleOnChange}
-            />
-            <button onClick={handleConnect}>connect</button>
-            <button onClick={handleSendMessage}>send</button>
-            <button onClick={handleDisconnect}>disconnect</button>
-            <div>
-                {messageHistory.map((msg, index) => (
-                    <div key={index}>
-                        <span>{msg?.user?.email}: </span>
-                        {msg.message}
+        <div className="p-[40px] grow">
+            <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col">
+                <div className="h-[75px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-sand"></div>
+                <div className="grow"></div>
+                <div className="h-[100px] rounded-md border-2 border-solid flex m-5">
+                    <textarea
+                        className="w-full p-3 resize-none focus:outline-none"
+                        placeholder="Send message..."
+                    ></textarea>
+                    <div className="p-3 flex h-[60px] gap-2">
+                        <div className="bg-beige px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
+                            <input
+                                type="file"
+                                title=" "
+                                className="opacity-0 absolute inset-0"
+                            />
+                            <svg
+                                stroke="currentColor"
+                                fill="currentColor"
+                                stroke-width="0"
+                                viewBox="0 0 512 512"
+                                className="css-119zpey"
+                                height="1em"
+                                width="1em"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path d="M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z"></path>
+                            </svg>
+                        </div>
+                        <button className="bg-beige px-3 py-1 rounded-md">
+                            Send
+                        </button>
                     </div>
-                ))}
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

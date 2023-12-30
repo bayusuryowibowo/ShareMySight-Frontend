@@ -1,7 +1,8 @@
 "use client";
 import db from "@/lib/firebaseConfig";
+import videoCallService from "@/lib/services/videoCallSingeton";
 import configuration from "@/lib/webRTCConfiguration";
-import { DocumentReference, addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { CollectionReference, DocumentReference, addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { useMemo, useRef, useState } from "react";
 
 const VideoCall = () => {
@@ -25,7 +26,7 @@ const VideoCall = () => {
     setRemoteStream(new MediaStream());
   }
 
-  const registerPeerConnectionListeners = (newRTCPeerConnection: RTCPeerConnection) :void => {
+  const registerPeerConnectionListeners = (newRTCPeerConnection: RTCPeerConnection): void => {
     newRTCPeerConnection.addEventListener("icegatheringstatechange", () => {
       console.log(
         `ICE gathering state changed: ${newRTCPeerConnection.iceGatheringState}`
@@ -51,7 +52,13 @@ const VideoCall = () => {
     setIsButtonDisabled({ ...isButtonDisabled, startRandomCallBtn: true });
     const roomsCol = collection(db, "rooms");
     const roomQuery = await getDocs(roomsCol);
-    const roomRef :DocumentReference = doc(roomsCol);
+    const videoCallRoom = await videoCallService.getRandomVideoCallRoom();
+    if (videoCallRoom) {
+      joinRoomById(roomsCol, videoCallRoom.roomId);
+      return;
+    }
+
+    const roomRef: DocumentReference = doc(roomsCol);
     console.log("Create PeerConnection with configuration: ", configuration);
     const newRTCPeerConnection = new RTCPeerConnection(configuration);
     setPeerConnection(newRTCPeerConnection);
@@ -90,6 +97,7 @@ const VideoCall = () => {
         };
         await setDoc(roomRef, roomWithOffer);
         setRoomId(roomRef.id);
+        await videoCallService.addGeneratedVideoCallRoom(roomRef.id);
         console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
       } else {
         console.error("Invalid offer");
@@ -131,6 +139,73 @@ const VideoCall = () => {
     // Listen for remote ICE candidates above
   }
 
+  async function joinRoomById(roomsCol: CollectionReference, roomId: string) {
+    const roomRef = doc(roomsCol, roomId);
+    const roomSnapshot = await getDoc(roomRef);
+    console.log('Got room:', roomSnapshot.exists);
+
+    if (roomSnapshot.exists()) {
+      console.log('Create PeerConnection with configuration: ', configuration);
+      const newRTCPeerConnection = new RTCPeerConnection(configuration);
+      setPeerConnection(newRTCPeerConnection);
+
+      registerPeerConnectionListeners(newRTCPeerConnection);
+      localStream?.getTracks().forEach(track => {
+        newRTCPeerConnection.addTrack(track, localStream);
+      });
+
+      // Code for collecting ICE candidates below
+      const calleeCandidatesCollection = collection(roomRef, "calleeCandidates");
+
+      const calleeSnapshot = await getDocs(calleeCandidatesCollection);
+      calleeSnapshot.forEach((doc) => {
+        const data = doc.data();
+        console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
+        newRTCPeerConnection.addIceCandidate(new RTCIceCandidate(data));
+      });
+      // Code for collecting ICE candidates above
+
+      newRTCPeerConnection.addEventListener('track', event => {
+        console.log('Got remote track:', event.streams[0]);
+        event.streams[0].getTracks().forEach(track => {
+          console.log('Add a track to the remoteStream:', track);
+          remoteStream?.addTrack(track);
+        });
+      });
+
+      // Code for creating SDP answer below
+      const offer = roomSnapshot.data().offer;
+      console.log('Got offer:', offer);
+      await newRTCPeerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await newRTCPeerConnection.createAnswer();
+      console.log('Created answer:', answer);
+      await newRTCPeerConnection.setLocalDescription(answer);
+
+      const roomWithAnswer = {
+        answer: {
+          type: answer.type,
+          sdp: answer.sdp,
+        },
+      };
+      await setDoc(roomRef, roomWithAnswer);
+      setRoomId(roomRef.id);
+      // Code for creating SDP answer above
+
+      // Listening for remote ICE candidates below
+      const callerCandidatesCollection = collection(roomRef, "callerCandidates");
+
+      newRTCPeerConnection.addEventListener("icecandidate", async (event) => {
+        if (!event.candidate) {
+          console.log("Got final candidate!");
+          return;
+        }
+        console.log("Got candidate: ", event.candidate);
+        await addDoc(callerCandidatesCollection, event.candidate.toJSON())
+      });
+      // Listening for remote ICE candidates above
+    }
+  }
+
   useMemo(() => {
     if (localStream && localVideoRef.current) {
       (localVideoRef.current as HTMLVideoElement).srcObject = localStream;
@@ -145,7 +220,7 @@ const VideoCall = () => {
 
   return (
     <section className=" flex flex-col">
-      <div id="videos">
+      <div id="videos" className=" flex flex-row">
         <video
           id="localVideo"
           ref={localVideoRef}

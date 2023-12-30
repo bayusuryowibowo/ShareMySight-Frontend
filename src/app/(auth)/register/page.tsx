@@ -23,7 +23,6 @@ interface LanguageOptions {
 }
 
 const RegisterPage = () => {
-    const cookies = useCookies();
     const router = useRouter();
     const languages = useFetch("/language");
     const languagesOptions: LanguageOptions[] = useMemo(
@@ -64,11 +63,7 @@ const RegisterPage = () => {
         e: React.MouseEvent<HTMLButtonElement>
     ): Promise<void> => {
         try {
-            await apiClient.post("/register", userData, {
-                headers: {
-                    access_token: `Bearer ${cookies.get("access_token")}`,
-                },
-            });
+            await apiClient.post("/register", userData);
             router.push("/login");
         } catch (error: any) {
             ErrorHandler.handleError(error);

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
+import axios from "axios";
 
 interface MessageHistory {
     username: string;
@@ -67,6 +68,19 @@ const Chat = () => {
         }
     };
 
+    const test = () => {
+        axios({
+            url: "http://localhost:8080/test",
+            withCredentials: true,
+        })
+            .then((response) => {
+                // handle the response
+            })
+            .catch((error) => {
+                // handle the error
+            });
+    };
+
     return (
         <>
             <input
@@ -82,6 +96,7 @@ const Chat = () => {
                     <div key={index}>{msg.content}</div>
                 ))}
             </div>
+            <button onClick={test}>test</button>
         </>
     );
 };

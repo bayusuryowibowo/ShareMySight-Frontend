@@ -12,7 +12,7 @@ export default function LoginLayout({
         >
             <div className=" bg-white w-2/3 m-h-4/5 rounded-[30px] shadow-md p-8 flex">
                 <p className="border-2 border-blue-500 grow-[4]">
-                    Ini gambar maskot kita ntar nyusul
+                    test coba sdfasdf
                 </p>
                 <div className="grow-[3] p-8">{children}</div>
             </div>

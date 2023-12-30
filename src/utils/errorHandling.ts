@@ -8,7 +8,7 @@ type ErrorMessage = {
 export default class ErrorHandler {
     static handleError(error: AxiosError): void {
         console.log("Error:", error);
-        const { status, response } = error;
+        const { response } = error;
         const message = (response?.data as ErrorMessage)?.message;
         toast.error(message, {
             position: "top-right",

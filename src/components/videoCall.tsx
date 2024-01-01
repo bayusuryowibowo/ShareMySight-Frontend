@@ -182,6 +182,7 @@ const VideoCall = () => {
       await newRTCPeerConnection.setLocalDescription(answer);
 
       const roomWithAnswer = {
+        offer,
         answer: {
           type: answer.type,
           sdp: answer.sdp,

@@ -2,7 +2,8 @@
 import db from "@/lib/firebaseConfig";
 import videoCallService from "@/lib/services/videoCallSingeton";
 import configuration from "@/lib/webRTCConfiguration";
-import { CollectionReference, DocumentReference, addDoc, collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import firebase from "firebase/app";
+import "firebase/firestore"
 import { useMemo, useRef, useState } from "react";
 
 const VideoCall = () => {
@@ -50,122 +51,113 @@ const VideoCall = () => {
 
   async function startRandomCall() {
     setIsButtonDisabled({ ...isButtonDisabled, startRandomCallBtn: true });
-    const roomsCol = collection(db, "rooms");
+    const db = firebase.firestore();
+    const roomRef = await db.collection('rooms').doc();
     const videoCallRoom = await videoCallService.getRandomVideoCallRoom();
     if (videoCallRoom) {
       console.log(videoCallRoom)
-      joinRoomById(roomsCol, videoCallRoom.roomId);
+      joinRoomById(videoCallRoom.roomId);
       return;
     }
 
-    const roomRef: DocumentReference = doc(roomsCol);
-    console.log("Create PeerConnection with configuration: ", configuration);
-    const newRTCPeerConnection = new RTCPeerConnection(configuration);
-    setPeerConnection(newRTCPeerConnection);
+    console.log('Create PeerConnection with configuration: ', configuration);
+    const peerConnection = new RTCPeerConnection(configuration);
 
-    registerPeerConnectionListeners(newRTCPeerConnection);
+    registerPeerConnectionListeners(peerConnection);
 
-    localStream?.getTracks().forEach((track) => {
-      newRTCPeerConnection.addTrack(track, localStream);
+    localStream?.getTracks().forEach(track => {
+      peerConnection.addTrack(track, localStream);
     });
 
     // Code for collecting ICE candidates below
-    const callerCandidatesCollection = collection(roomRef, "callerCandidates");
+    const callerCandidatesCollection = roomRef.collection('callerCandidates');
 
-    newRTCPeerConnection.addEventListener("icecandidate", async (event) => {
+    peerConnection.addEventListener('icecandidate', event => {
       if (!event.candidate) {
-        console.log("Got final candidate!");
+        console.log('Got final candidate!');
         return;
       }
-      console.log("Got candidate: ", event.candidate);
-      await addDoc(callerCandidatesCollection, event.candidate.toJSON())
+      console.log('Got candidate: ', event.candidate);
+      callerCandidatesCollection.add(event.candidate.toJSON());
     });
     // Code for collecting ICE candidates above
 
     // Code for creating a room below
-    try {
-      const offer = await newRTCPeerConnection.createOffer();
-      await newRTCPeerConnection.setLocalDescription(offer);
-      console.log("Created offer:", offer);
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    console.log('Created offer:', offer);
 
-      if (offer && offer.type && offer.sdp) {
-        const roomWithOffer = {
-          offer: {
-            type: offer.type,
-            sdp: offer.sdp,
-          },
-        };
-        await setDoc(roomRef, roomWithOffer);
-        setRoomId(roomRef.id);
-        await videoCallService.addGeneratedVideoCallRoom(roomRef.id);
-        console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
-      } else {
-        console.error("Invalid offer");
-      }
-    } catch (error) {
-      console.error("Error creating offer:", error);
-    }
-
+    const roomWithOffer = {
+      'offer': {
+        type: offer.type,
+        sdp: offer.sdp,
+      },
+    };
+    await roomRef.set(roomWithOffer);
+    const roomId: string = roomRef.id;
+    await videoCallService.addGeneratedVideoCallRoom(roomId);
+    console.log(`New room created with SDP offer. Room ID: ${roomId}`);
     // Code for creating a room above
 
-    newRTCPeerConnection.addEventListener("track", (event) => {
-      console.log("Got remote track:", event.streams[0]);
-      event.streams[0].getTracks().forEach((track) => {
-        console.log("Add a track to the remoteStream:", track);
+    peerConnection.addEventListener('track', event => {
+      console.log('Got remote track:', event.streams[0]);
+      event.streams[0].getTracks().forEach(track => {
+        console.log('Add a track to the remoteStream:', track);
         remoteStream?.addTrack(track);
       });
     });
 
-    const snapshot = await getDoc(roomRef);
-    const data = snapshot.data();
-
-    if (!newRTCPeerConnection.currentRemoteDescription && data && data.answer) {
-      console.log("Got remote description: ", data.answer);
-      const rtcSessionDescription = new RTCSessionDescription(data.answer);
-      await newRTCPeerConnection.setRemoteDescription(rtcSessionDescription);
-    }
+    // Listening for remote session description below
+    roomRef.onSnapshot(async snapshot => {
+      const data = snapshot.data();
+      if (!peerConnection.currentRemoteDescription && data && data.answer) {
+        console.log('Got remote description: ', data.answer);
+        const rtcSessionDescription = new RTCSessionDescription(data.answer);
+        await peerConnection.setRemoteDescription(rtcSessionDescription);
+      }
+    });
     // Listening for remote session description above
 
     // Listen for remote ICE candidates below
-    const calleeCandidatesCollection = collection(roomRef, "calleeCandidates");
-
-    const calleeSnapshot = await getDocs(calleeCandidatesCollection);
-    calleeSnapshot.forEach((doc) => {
-      const data = doc.data();
-      console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
-      newRTCPeerConnection.addIceCandidate(new RTCIceCandidate(data));
+    roomRef.collection('calleeCandidates').onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(async change => {
+        if (change.type === 'added') {
+          let data = change.doc.data();
+          console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
+          await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+        }
+      });
     });
-
     // Listen for remote ICE candidates above
   }
 
-  async function joinRoomById(roomsCol: CollectionReference, roomId: string) {
-    const roomRef = doc(roomsCol, roomId);
-    const roomSnapshot = await getDoc(roomRef);
+  async function joinRoomById(roomId: string) {
+    const db = firebase.firestore();
+    const roomRef = db.collection('rooms').doc(`${roomId}`);
+    const roomSnapshot = await roomRef.get();
     console.log('Got room:', roomSnapshot.exists);
 
-    if (roomSnapshot.exists()) {
+    if (roomSnapshot.exists) {
       console.log('Create PeerConnection with configuration: ', configuration);
-      const newRTCPeerConnection = new RTCPeerConnection(configuration);
-      setPeerConnection(newRTCPeerConnection);
-
-      registerPeerConnectionListeners(newRTCPeerConnection);
+      const peerConnection = new RTCPeerConnection(configuration);
+      registerPeerConnectionListeners(peerConnection);
       localStream?.getTracks().forEach(track => {
-        newRTCPeerConnection.addTrack(track, localStream);
+        peerConnection.addTrack(track, localStream);
       });
 
       // Code for collecting ICE candidates below
-      const calleeCandidatesCollection = collection(roomRef, "calleeCandidates");
-
-      const calleeSnapshot = await getDocs(calleeCandidatesCollection);
-      calleeSnapshot.forEach((doc) => {
-        const data = doc.data();
-        console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
-        newRTCPeerConnection.addIceCandidate(new RTCIceCandidate(data));
+      const calleeCandidatesCollection = roomRef.collection('calleeCandidates');
+      peerConnection.addEventListener('icecandidate', event => {
+        if (!event.candidate) {
+          console.log('Got final candidate!');
+          return;
+        }
+        console.log('Got candidate: ', event.candidate);
+        calleeCandidatesCollection.add(event.candidate.toJSON());
       });
       // Code for collecting ICE candidates above
 
-      newRTCPeerConnection.addEventListener('track', event => {
+      peerConnection.addEventListener('track', event => {
         console.log('Got remote track:', event.streams[0]);
         event.streams[0].getTracks().forEach(track => {
           console.log('Add a track to the remoteStream:', track);
@@ -174,36 +166,34 @@ const VideoCall = () => {
       });
 
       // Code for creating SDP answer below
-      const offer = roomSnapshot.data().offer;
+      const offer = roomSnapshot.data()?.offer;
       console.log('Got offer:', offer);
-      await newRTCPeerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await newRTCPeerConnection.createAnswer();
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      const answer = await peerConnection.createAnswer();
       console.log('Created answer:', answer);
-      await newRTCPeerConnection.setLocalDescription(answer);
+      await peerConnection.setLocalDescription(answer);
 
       const roomWithAnswer = {
-        offer,
         answer: {
           type: answer.type,
           sdp: answer.sdp,
         },
       };
-      await setDoc(roomRef, roomWithAnswer);
-      setRoomId(roomRef.id);
+      await roomRef.update(roomWithAnswer);
       // Code for creating SDP answer above
 
       // Listening for remote ICE candidates below
-      const callerCandidatesCollection = collection(roomRef, "callerCandidates");
-
-      newRTCPeerConnection.addEventListener("icecandidate", async (event) => {
-        if (!event.candidate) {
-          console.log("Got final candidate!");
-          return;
-        }
-        console.log("Got candidate: ", event.candidate);
-        await addDoc(callerCandidatesCollection, event.candidate.toJSON())
+      roomRef.collection('callerCandidates').onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(async change => {
+          if (change.type === 'added') {
+            let data = change.doc.data();
+            console.log(`Got new remote ICE candidate: ${JSON.stringify(data)}`);
+            await peerConnection.addIceCandidate(new RTCIceCandidate(data));
+          }
+        });
       });
       // Listening for remote ICE candidates above
+
     }
   }
 

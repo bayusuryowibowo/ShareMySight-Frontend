@@ -1,39 +1,48 @@
+"use client";
 import { FunctionComponent } from "react";
 import VideoChatOutlinedIcon from "@mui/icons-material/VideoChatOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { AuthContext } from "@/context/authContext";
+import { useContext } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-interface Props {}
+const Sidebar: FunctionComponent = () => {
+    const router = useRouter();
+    const { logout } = useContext(AuthContext);
 
-const Sidebar: FunctionComponent<Props> = () => {
     return (
-        <div className="bg-beige h-screen w-[300px] p-4 shadow-custom z-10">
-            <div className="text-2xl font-bold text-branch pl-2">
-                ShareMySight
-            </div>
-            <ul className="mt-[40px]">
-                <li className="transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
-                    <VideoChatOutlinedIcon />
+        <div className="h-screen w-[125px] p-4 shadow-custom z-10">
+            <div className="">SMS</div>
+            <ul className="mt-[80px]">
+                <li className="transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/">
-                        <div className="inline-block ml-2 text-lg">
-                            Live Call
-                        </div>
+                        <VideoChatOutlinedIcon className="text-3xl" />
                     </Link>
+                    <div>Video</div>
                 </li>
-                <li className="mt-[25px] transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
-                    <ChatOutlinedIcon />
+                <li className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/chat">
-                        <div className="inline-block ml-2 text-lg">
-                            Live Chat
-                        </div>
+                        <ChatOutlinedIcon className="text-3xl" />
                     </Link>
+                    <div>Chat</div>
                 </li>
-                <li className="mt-[25px] transition ease-in-out delay-50 hover:bg-wood hover:text-beige p-2 rounded-md">
-                    <SmartToyOutlinedIcon />
+                <li className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/ai">
-                        <div className="inline-block ml-2 text-lg">Ask AI</div>
+                        <SmartToyOutlinedIcon className="text-3xl" />
                     </Link>
+                    <div>Ask AI</div>
+                </li>
+                <li
+                    className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
+                    onClick={() => {
+                        logout();
+                    }}
+                >
+                    <LogoutIcon className="text-3xl" />
+                    <div>Logout</div>
                 </li>
             </ul>
         </div>

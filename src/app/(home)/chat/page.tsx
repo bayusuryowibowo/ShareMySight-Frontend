@@ -65,23 +65,23 @@ const Chat = () => {
     };
 
     return (
-        <div className="p-[40px] grow">
-            <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col">
-                <div className="h-[75px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-sand"></div>
-                <div className="grow border-2 border-solid p-5">
+        <div className="p-[40px] grow bg-[#EDF2F6]">
+            <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
+                <div className="h-[75px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-[#76bca2]"></div>
+                <div className="grow p-5 bg-white">
                     {messageHistory.map((el, index) => (
                         <div key={index}>
                             {el.user.email}: {el.message}
                         </div>
                     ))}
                 </div>
-                <div className="h-[100px] rounded-md border-2 border-solid flex m-5">
+                <div className="h-[100px] border-2 border-solid flex m-5 bg-white">
                     <textarea
                         className="w-full p-3 resize-none focus:outline-none"
                         placeholder="Send message..."
                     ></textarea>
                     <div className="p-3 flex h-[60px] gap-2">
-                        <div className="bg-beige px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
+                        <div className="px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
                             <input
                                 type="file"
                                 title=" "

@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const logout = () => {
         cookies.remove("access_token");
-        router.push("/");
+        router.push("/", undefined);
     };
 
     const contextValue: AuthContextType = {

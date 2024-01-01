@@ -18,6 +18,8 @@ const config: Config = {
                 peach: "#F3EDDE",
                 sage: "#5E6B62",
                 leaf: "#054F3E",
+                avocado: "#bfd0b1",
+                mint: "#f1f6f1",
             },
             flexGrow: {
                 3: "3",

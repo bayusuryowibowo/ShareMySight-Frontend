@@ -1,5 +1,7 @@
-const Page = ({}: { home: React.ReactNode; login: React.ReactNode }) => {
-    return <></>;
+import { FunctionComponent } from "react";
+
+const Home: FunctionComponent = () => {
+    return <>test</>;
 };
 
-export default Page;
+export default Home;

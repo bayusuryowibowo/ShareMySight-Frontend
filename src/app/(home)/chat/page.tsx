@@ -9,6 +9,7 @@ const Chat = () => {
     const [isConnected, setIsConnected] = useState<Boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageHistory, setMessageHistory] = useFetch("/chat");
+    console.log(messageHistory);
 
     useEffect(() => {
         if (isConnected) {
@@ -67,7 +68,13 @@ const Chat = () => {
         <div className="p-[40px] grow">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col">
                 <div className="h-[75px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-sand"></div>
-                <div className="grow"></div>
+                <div className="grow border-2 border-solid p-5">
+                    {messageHistory.map((el, index) => (
+                        <div key={index}>
+                            {el.user.email}: {el.message}
+                        </div>
+                    ))}
+                </div>
                 <div className="h-[100px] rounded-md border-2 border-solid flex m-5">
                     <textarea
                         className="w-full p-3 resize-none focus:outline-none"

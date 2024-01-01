@@ -51,7 +51,6 @@ const VideoCall = () => {
   async function startRandomCall() {
     setIsButtonDisabled({ ...isButtonDisabled, startRandomCallBtn: true });
     const roomsCol = collection(db, "rooms");
-    const roomQuery = await getDocs(roomsCol);
     const videoCallRoom = await videoCallService.getRandomVideoCallRoom();
     if (videoCallRoom) {
       console.log(videoCallRoom)

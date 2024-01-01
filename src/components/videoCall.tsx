@@ -51,7 +51,6 @@ const VideoCall = () => {
 
   async function startRandomCall() {
     setIsButtonDisabled({ ...isButtonDisabled, startRandomCallBtn: true });
-    const db = firebase.firestore();
     const roomRef = await db.collection('rooms').doc();
     const videoCallRoom = await videoCallService.getRandomVideoCallRoom();
     if (videoCallRoom) {
@@ -132,7 +131,6 @@ const VideoCall = () => {
   }
 
   async function joinRoomById(roomId: string) {
-    const db = firebase.firestore();
     const roomRef = db.collection('rooms').doc(`${roomId}`);
     const roomSnapshot = await roomRef.get();
     console.log('Got room:', roomSnapshot.exists);

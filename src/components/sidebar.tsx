@@ -14,29 +14,29 @@ const Sidebar: FunctionComponent = () => {
     const { logout } = useContext(AuthContext);
 
     return (
-        <div className="h-screen w-[125px] p-4 shadow-custom z-10">
-            <div className="">SMS</div>
+        <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-[#333449]">
+            <div className="text-center text-white">Logo</div>
             <ul className="mt-[80px]">
-                <li className="transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+                <li className="transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/">
                         <VideoChatOutlinedIcon className="text-3xl" />
                     </Link>
                     <div>Video</div>
                 </li>
-                <li className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/chat">
                         <ChatOutlinedIcon className="text-3xl" />
                     </Link>
                     <div>Chat</div>
                 </li>
-                <li className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/ai">
                         <SmartToyOutlinedIcon className="text-3xl" />
                     </Link>
                     <div>Ask AI</div>
                 </li>
                 <li
-                    className="mt-[15px] transition ease-in-out delay-50 text-dark-green hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
+                    className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
                     onClick={() => {
                         logout();
                     }}

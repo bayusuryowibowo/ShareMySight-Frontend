@@ -145,3 +145,19 @@
         transform: scale(1) translate(10px, -10px);
     }
 }
+
+.h-chatbox {
+    max-height: calc(100vh - 90px); /* Adjust 90px as needed */
+}
+
+.h-chatbox-header {
+    height: 50px; /* Adjust 50px as needed */
+}
+
+.h-chatbox-textarea {
+    height: 100px; /* Adjust 100px as needed */
+}
+
+.scrollbar {
+    scrollbar-width: thin;
+}

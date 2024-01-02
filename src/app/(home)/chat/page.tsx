@@ -1,15 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
 import useFetch from "@/hooks/useFetch";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
     const [isConnected, setIsConnected] = useState<Boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageHistory, setMessageHistory] = useFetch("/chat");
-    console.log(messageHistory);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
         if (isConnected) {
@@ -37,9 +38,12 @@ const Chat = () => {
         }
     }, [isConnected]);
 
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCurrentMessage(e.target.value);
-    };
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop =
+                scrollContainerRef.current.scrollHeight;
+        }
+    }, [messageHistory]);
 
     const handleConnect = () => {
         setIsConnected(true);
@@ -65,17 +69,51 @@ const Chat = () => {
     };
 
     return (
-        <div className="p-[40px] grow bg-[#EDF2F6]">
+        <div className="p-[30px] grow bg-[#F6F6F6] h-chatbox">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
-                <div className="h-[75px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-[#76bca2]"></div>
-                <div className="grow p-5 bg-white">
-                    {messageHistory.map((el, index) => (
-                        <div key={index}>
-                            {el.user.email}: {el.message}
-                        </div>
-                    ))}
+                <div className="h-[50px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-[#333449] text-white flex items-center justify-center">
+                    Ask Volunteers What you need . . .
                 </div>
-                <div className="h-[100px] border-2 border-solid flex m-5 bg-white">
+                <div
+                    className="grow p-5 overflow-y-scroll scrollbar"
+                    ref={scrollContainerRef}
+                >
+                    {messageHistory.map((el, index) => {
+                        if (el.user.email === "mega") {
+                            return (
+                                <div key={index} className="flex gap-5 mb-5">
+                                    <img
+                                        src="/volunteer.png"
+                                        alt="volunteer profile"
+                                        className="w-10 h-10"
+                                    />
+                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                        <div className="font-bold">
+                                            {el.user.email}
+                                        </div>
+                                        <div>{el.message}</div>
+                                    </div>
+                                </div>
+                            );
+                        } else {
+                            return (
+                                <div
+                                    key={index}
+                                    className="flex gap-5 mb-5 justify-end"
+                                >
+                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                        <div className="font-bold">
+                                            {el.user.email}
+                                        </div>
+                                        <div>{el.message}</div>
+                                    </div>
+                                    <AccountCircleIcon className="text-4xl" />
+                                </div>
+                            );
+                        }
+                    })}
+                </div>
+                <div className="border-2 border-solid flex m-5 bg-white">
                     <textarea
                         className="w-full p-3 resize-none focus:outline-none"
                         placeholder="Send message..."
@@ -90,7 +128,7 @@ const Chat = () => {
                             <svg
                                 stroke="currentColor"
                                 fill="currentColor"
-                                stroke-width="0"
+                                strokeWidth="0"
                                 viewBox="0 0 512 512"
                                 className="css-119zpey"
                                 height="1em"

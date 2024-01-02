@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.2",
@@ -22,18 +23,24 @@
     "next": "14.0.4",
     "next-client-cookies": "^1.1.0",
     "react": "^18",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18",
+    "react-icons": "^4.12.0",
     "react-redux": "^9.0.4",
     "react-select": "^5.8.0",
     "react-toastify": "^9.1.3",
+    "simple-peer": "^9.11.1",
+    "socket.io-client": "^4.7.2",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18",
     "@types/react-redux": "^7.1.33",
+    "@types/simple-peer": "^9.11.8",
     "@types/sockjs-client": "^1.5.4",
     "@types/stompjs": "^2.3.9",
     "autoprefixer": "^10.0.1",

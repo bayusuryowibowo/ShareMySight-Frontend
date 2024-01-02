@@ -11,7 +11,7 @@ interface ApiResponse {
 }
 
 const useFetch = (url: string) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<any>([]);
 
     useEffect(() => {
         apiClient

@@ -7,10 +7,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "@/context/authContext";
 import { useContext } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const Sidebar: FunctionComponent = () => {
-    const router = useRouter();
     const { logout } = useContext(AuthContext);
 
     return (

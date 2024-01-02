@@ -20,7 +20,6 @@ export default function AuthLayout({
                         <div className="ball"></div>
                     </div>
                 </div>
-
                 <div
                     className={
                         "w-full min-h-screen flex justify-center items-center bg-peach overlay relative"

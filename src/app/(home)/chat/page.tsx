@@ -11,6 +11,7 @@ const Chat = () => {
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageHistory, setMessageHistory] = useFetch("/chat");
     const scrollContainerRef = useRef(null);
+    const textArea = useRef(null);
 
     useEffect(() => {
         if (isConnected) {
@@ -45,16 +46,12 @@ const Chat = () => {
         }
     }, [messageHistory]);
 
-    const handleConnect = () => {
+    useEffect(() => {
         setIsConnected(true);
-    };
+    }, []);
 
-    const handleDisconnect = () => {
-        if (stompClient) {
-            stompClient.disconnect();
-            setStompClient(null);
-            setIsConnected(false);
-        }
+    const handleOnChange = (e: React.FormEvent<HTMLTextAreaElement>) => {
+        setCurrentMessage((e.target as HTMLInputElement).value);
     };
 
     const handleSendMessage = () => {
@@ -65,6 +62,7 @@ const Chat = () => {
                 JSON.stringify({ content: currentMessage })
             );
             setCurrentMessage("");
+            textArea.current.value = "";
         }
     };
 
@@ -79,14 +77,21 @@ const Chat = () => {
                     ref={scrollContainerRef}
                 >
                     {messageHistory.map((el, index) => {
-                        if (el.user.email === "mega") {
+                        if (
+                            el.user.email !== localStorage.getItem("username")
+                        ) {
                             return (
                                 <div key={index} className="flex gap-5 mb-5">
-                                    <img
-                                        src="/volunteer.png"
-                                        alt="volunteer profile"
-                                        className="w-10 h-10"
-                                    />
+                                    {el.user.role === "volunteer" ? (
+                                        <img
+                                            src="/volunteer.png"
+                                            alt="volunteer profile"
+                                            className="w-10 h-10"
+                                        />
+                                    ) : (
+                                        <AccountCircleIcon className="text-4xl" />
+                                    )}
+
                                     <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
                                         <div className="font-bold">
                                             {el.user.email}
@@ -107,7 +112,16 @@ const Chat = () => {
                                         </div>
                                         <div>{el.message}</div>
                                     </div>
-                                    <AccountCircleIcon className="text-4xl" />
+
+                                    {el.user.role === "volunteer" ? (
+                                        <img
+                                            src="/volunteer.png"
+                                            alt="volunteer profile"
+                                            className="w-10 h-10"
+                                        />
+                                    ) : (
+                                        <AccountCircleIcon className="text-4xl" />
+                                    )}
                                 </div>
                             );
                         }
@@ -117,6 +131,8 @@ const Chat = () => {
                     <textarea
                         className="w-full p-3 resize-none focus:outline-none"
                         placeholder="Send message..."
+                        onChange={handleOnChange}
+                        ref={textArea}
                     ></textarea>
                     <div className="p-3 flex h-[60px] gap-2">
                         <div className="px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
@@ -138,7 +154,10 @@ const Chat = () => {
                                 <path d="M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z"></path>
                             </svg>
                         </div>
-                        <button className="bg-beige px-3 py-1 rounded-md">
+                        <button
+                            className="bg-beige px-3 py-1 rounded-md"
+                            onClick={handleSendMessage}
+                        >
                             Send
                         </button>
                     </div>

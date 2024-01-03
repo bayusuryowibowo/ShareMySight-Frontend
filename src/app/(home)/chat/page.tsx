@@ -4,18 +4,22 @@ import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
 import useFetch from "@/hooks/useFetch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import axios from "axios";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
     const [isConnected, setIsConnected] = useState<Boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
     const [messageHistory, setMessageHistory] = useFetch("/chat");
-    const scrollContainerRef = useRef(null);
-    const textArea = useRef(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const textArea = useRef<HTMLTextAreaElement>(null);
+    const [imageSelected, setImageSelected] = useState<File | null>(null);
 
     useEffect(() => {
         if (isConnected) {
-            const socket = new SockJS("http://localhost:8080/ws");
+            const socket = new SockJS(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}/ws`
+            );
             const stomp = Stomp.over(socket);
 
             stomp.connect({}, () => {
@@ -24,7 +28,7 @@ const Chat = () => {
 
                 stomp.subscribe("/topic/messages", (response) => {
                     const newMessage = JSON.parse(response.body);
-                    setMessageHistory((prevMessages) => [
+                    setMessageHistory((prevMessages: any) => [
                         ...prevMessages,
                         newMessage,
                     ]);
@@ -59,10 +63,12 @@ const Chat = () => {
             stompClient.send(
                 "/app/chat",
                 {},
-                JSON.stringify({ content: currentMessage })
+                JSON.stringify({ message: currentMessage })
             );
             setCurrentMessage("");
-            textArea.current.value = "";
+            if (textArea.current) {
+                textArea.current.value = "";
+            }
         }
     };
 
@@ -76,7 +82,7 @@ const Chat = () => {
                     className="grow p-5 overflow-y-scroll scrollbar"
                     ref={scrollContainerRef}
                 >
-                    {messageHistory.map((el, index) => {
+                    {messageHistory.map((el: any, index: any) => {
                         if (
                             el.user.email !== localStorage.getItem("username")
                         ) {
@@ -140,6 +146,11 @@ const Chat = () => {
                                 type="file"
                                 title=" "
                                 className="opacity-0 absolute inset-0"
+                                onChange={(e) => {
+                                    if (e.target.files) {
+                                        setImageSelected(e.target.files[0]);
+                                    }
+                                }}
                             />
                             <svg
                                 stroke="currentColor"

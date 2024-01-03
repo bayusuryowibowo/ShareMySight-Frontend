@@ -53,7 +53,7 @@ const AIChat = () => {
                             >
                                 <img
                                     src={el.imageUrl}
-                                    className="max-w-[250px] max-h-[250px]"
+                                    className="max-w-[350px] max-h-[350px]"
                                 ></img>
                                 <AccountCircleIcon className="text-4xl" />
                             </div>

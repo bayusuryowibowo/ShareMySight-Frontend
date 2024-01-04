@@ -32,12 +32,16 @@ export default function RandomVideoCallPage() {
   const connectionRef = useRef<Peer.Instance | undefined>();
   const [socket, setSocket] = useState<Socket>();
 
+  const setAsyncStreamState = async (newState: MediaStream) => {
+    setStream(newState);
+    return Promise.resolve();
+  };
+
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        setStream(currentStream);
-
+      .then(async (currentStream) => {
+        await setAsyncStreamState(currentStream);
         if (myVideo.current) {
           myVideo.current.srcObject = currentStream;
         }
@@ -45,80 +49,86 @@ export default function RandomVideoCallPage() {
   }, []);
 
   useEffect(() => {
-    const s = io("http://localhost:8081", {
-      reconnection: false,
-      transports: ["websocket"],
-    });
+    if (!socket && stream) {
+      const s = io("http://localhost:8081", {
+        reconnection: false,
+        transports: ["websocket"],
+      });
 
-    console.log("first userVideo >>>", userVideo.current);
+      console.log("first userVideo >>>", userVideo.current);
 
-    setSocket(s);
-    s.on("me", (id: string) => setMe(id));
-    s.on(
-      "callUser",
-      ({ from, name: callerName, signal }: CallUserRequest) => {
-        setCall({
-          isReceivingCall: true,
-          from,
-          name: callerName,
-          signal,
-        });
-      }
-    );
-
-    s.on(
-      "startRandomCall",
-      ({ from, name: callerName, signal }: CallUserRequest) => {
-        setCall({
-          isReceivingCall: true,
-          from,
-          name: callerName,
-          signal,
-        });
-        if (from && signal) {
-          setCallAccepted(true);
-        
-          // BUG DI SINI, stream undefined
-          console.log(
-            "stream before instaniate >>> ", stream
-          )
-
-          const peer = new Peer({
-            initiator: false,
-            trickle: false,
-            stream: stream,
+      setSocket(s);
+      s.on("me", (id: string) => setMe(id));
+      s.on(
+        "callUser",
+        ({ from, name: callerName, signal }: CallUserRequest) => {
+          setCall({
+            isReceivingCall: true,
+            from,
+            name: callerName,
+            signal,
           });
-
-          peer.on("signal", (data) => {
-            console.log("goingRandomCall : signal = ", data);
-            
-            s.emit("goingRandomCall", {
-              signal: data,
-              to: from,
-            });
-          });
-
-          peer.on("stream", (currentStream) => {
-            if (userVideo.current) {
-              console.log("from startRandomCall stream userVideo >>>", currentStream);
-              userVideo.current.srcObject = currentStream;
-            }
-          });
-          console.log("call.signal >>>>>>>", signal);
-
-          peer.signal(signal);
-
-          connectionRef.current = peer;
         }
-      }
-    );
+      );
 
-    return () => {
-      if (socket) {
-        s.disconnect();
-      }
-    };
-  }, []);
+      s.on(
+        "startRandomCall",
+        ({ from, name: callerName, signal }: CallUserRequest) => {
+          setCall({
+            isReceivingCall: true,
+            from,
+            name: callerName,
+            signal,
+          });
+          if (from && signal) {
+            setCallAccepted(true);
+
+            // BUG DI SINI, stream undefined
+            console.log(
+              "stream before instaniate >>> ", stream
+            )
+
+            const peer = new Peer({
+              initiator: false,
+              trickle: false,
+              stream: stream,
+            });
+
+            peer.on("signal", (data) => {
+              console.log("goingRandomCall : signal = ", data);
+
+              s.emit("goingRandomCall", {
+                signal: data,
+                to: from,
+              });
+            });
+
+            peer.on("stream", (currentStream) => {
+              if (userVideo.current) {
+                console.log("from startRandomCall stream userVideo >>>", currentStream);
+                userVideo.current.srcObject = currentStream;
+              }
+            });
+            console.log("call.signal >>>>>>>", signal);
+
+            peer.signal(signal);
+
+            connectionRef.current = peer;
+          }
+        }
+      );
+
+      return () => {
+        if (socket) {
+          s.disconnect();
+        }
+      };
+    }
+  }, [stream])
+
+  // console.log(
+  //   "stream before instaniate di luar useEffect >>> ", stream
+  // )
 
   const callRandomUser = () => {
     if (socket) {

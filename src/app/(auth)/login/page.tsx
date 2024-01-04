@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ChangeEvent, useContext, useState } from "react";
 import { apiClient } from "@/utils/axios";
 import ErrorHandler from "@/utils/errorHandling";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 
 interface userData {
     email: string;

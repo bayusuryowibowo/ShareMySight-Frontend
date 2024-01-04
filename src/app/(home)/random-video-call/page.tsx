@@ -13,10 +13,6 @@ type Call = {
 
 type CallUserRequest = { from: string; name: string; signal: Peer.SignalData };
 
-const socket = io("ws://localhost:8081", {
-  autoConnect: false
-});
-
 export default function RandomVideoCallPage() {
   const [idToCall, setIdToCall] = useState("");
   const [callAccepted, setCallAccepted] = useState<boolean>(false);
@@ -31,63 +27,10 @@ export default function RandomVideoCallPage() {
   });
   const [me, setMe] = useState<string>("");
 
-  const myVideo = useRef<HTMLVideoElement | undefined>();
-  const userVideo = useRef<HTMLVideoElement | undefined>();
+  const myVideo = useRef<HTMLVideoElement>(null);
+  const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance | undefined>();
-  // const [socket, setSocket] = useState<Socket | null>(null);
-  // const socket = useRef<Socket | null>(null)
-  const [isSocketConnected, setIsSocketConnected] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-    }
-  
-    setIsSocketConnected(true);
-  
-    // ... (socket.on dan seterusnya)
-    socket.on("me", (id: string) => setMe(id));
-
-      socket.on(
-        "callUser",
-        ({ from, name: callerName, signal }: CallUserRequest) => {
-          setCall({ isReceivingCall: true, from, name: callerName, signal });
-        }
-      );
-
-      socket.on(
-        "startRandomCall",
-        ({ from, name: callerName, signal }: CallUserRequest) => {
-          setCall({ isReceivingCall: true, from, name: callerName, signal });
-          if (from && name && signal) {
-            setCallAccepted(true);
-
-            const peer = new Peer({ initiator: false, trickle: false, stream });
-
-            peer.on("signal", (data) => {
-              socket.emit("goingRandomCall", { signal: data, to: call.from });
-            });
-
-            peer.on("stream", (currentStream) => {
-              if (userVideo.current) {
-                userVideo.current.srcObject = currentStream;
-              }
-            });
-
-            peer.signal(call.signal);
-
-            connectionRef.current = peer;
-          }
-        }
-      );
-
-    return () => {
-      if (socket.connected) {
-        socket.disconnect();
-        setIsSocketConnected(false);
-      }
-    };
-  }, []);
+  const [socket, setSocket] = useState<Socket>();
 
   useEffect(() => {
     navigator.mediaDevices
@@ -101,62 +44,142 @@ export default function RandomVideoCallPage() {
       });
   }, []);
 
+  useEffect(() => {
+    const s = io("http://localhost:8081", {
+      reconnection: false,
+      transports: ["websocket"],
+    });
 
+    console.log("first userVideo >>>", userVideo.current);
+
+    setSocket(s);
+    s.on("me", (id: string) => setMe(id));
+    s.on(
+      "callUser",
+      ({ from, name: callerName, signal }: CallUserRequest) => {
+        setCall({
+          isReceivingCall: true,
+          from,
+          name: callerName,
+          signal,
+        });
+      }
+    );
+
+    s.on(
+      "startRandomCall",
+      ({ from, name: callerName, signal }: CallUserRequest) => {
+        setCall({
+          isReceivingCall: true,
+          from,
+          name: callerName,
+          signal,
+        });
+        if (from && signal) {
+          setCallAccepted(true);
+        
+          // BUG DI SINI, stream undefined
+          console.log(
+            "stream before instaniate >>> ", stream
+          )
+
+          const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream: stream,
+          });
+
+          peer.on("signal", (data) => {
+            console.log("goingRandomCall : signal = ", data);
+            
+            s.emit("goingRandomCall", {
+              signal: data,
+              to: from,
+            });
+          });
+
+          peer.on("stream", (currentStream) => {
+            if (userVideo.current) {
+              console.log("from startRandomCall stream userVideo >>>", currentStream);
+              userVideo.current.srcObject = currentStream;
+            }
+          });
+          console.log("call.signal >>>>>>>", signal);
+
+          peer.signal(signal);
+
+          connectionRef.current = peer;
+        }
+      }
+    );
+
+    return () => {
+      if (socket) {
+        s.disconnect();
+      }
+    };
+  }, []);
 
   const callRandomUser = () => {
     if (socket) {
       const peer = new Peer({ initiator: true, trickle: false, stream });
 
       peer.on("signal", (data) => {
-        console.log("signal >>>>>>>>", data);
-        console.log("socket current", socket);
+        console.log("signal >>> ", data);
 
         socket.emit("startRandomCall", {
-          userToCall: "",
-          signalData: {},
+          signalData: data,
           from: me,
           name,
         });
       });
 
       peer.on("stream", (currentStream) => {
+        console.log("stream userVideo >>>", currentStream);
         if (userVideo.current) {
           userVideo.current.srcObject = currentStream;
         }
       });
 
+
       socket.on("callAccepted", (signal) => {
+        console.log("callAccept >>>>>>>>", signal);
+
         setCallAccepted(true);
 
-        peer.signal(signal);
+        connectionRef.current?.signal(signal);
       });
 
       connectionRef.current = peer;
+    } else {
+      console.log("socket undefined")
     }
-  }
+  };
 
   return (
     <main>
-      {/* my video */}
-      {stream && (
-        <video playsInline muted ref={myVideo} autoPlay width="600" />
-      )}
+      <div className=" flex flex-row gap-5">
+        {/* my video */}
+        {stream && (
+          <video playsInline muted ref={myVideo} autoPlay width="600" />
+        )}
 
-      {/* user's video */}
-
-      {callAccepted && !callEnded && (
-        <video playsInline ref={userVideo} autoPlay width="600" />
-      )}
+        {/* user's video */}
+        {!callEnded && (
+          <video playsInline ref={userVideo} autoPlay width="600" />
+        )}
+      </div>
       <form>
         <label htmlFor="">Username</label>
-        <input type="text" name="" id="" value={name}
-          onChange={(e) => setName(e.target.value)} />
+        <input
+          type="text"
+          name=""
+          id=""
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </form>
-      <button
-        onClick={callRandomUser}
-      >
-        Start Random Call
-      </button>
+      <button onClick={callRandomUser}>Start Random Call</button>
     </main>
   );
 }

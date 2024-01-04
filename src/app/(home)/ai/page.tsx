@@ -102,7 +102,7 @@ const AIChat = () => {
                     {chatHistory.map((el: any, index: number) => (
                         <div key={index}>
                             <div className="flex gap-5 mb-5 justify-end">
-                                <div className="bg-[#333449] p-3">
+                                <div>
                                     <img
                                         src={el?.imageUrl}
                                         className="max-w-[350px] max-h-[350px]"

@@ -70,7 +70,7 @@ const RegisterPage = () => {
     };
 
     return (
-        <>
+        <div className="p-2">
             <div className="text-center font-bold text-4xl">Register</div>
             <p className="text-center mt-3">
                 Hey, Enter your details to get sign up your account
@@ -80,7 +80,7 @@ const RegisterPage = () => {
                     <div
                         className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
                             userData.role === UserRole.Volunteer &&
-                            "border-2 border-solid border-[#FEC887] outline-none"
+                            "border-2 border-solid border-leaf outline-none"
                         }`}
                     >
                         <Input
@@ -103,7 +103,7 @@ const RegisterPage = () => {
                     <div
                         className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
                             userData.role === UserRole.NeedAssistance &&
-                            "border-2 border-solid border-[#FEC887] outline-none"
+                            "border-2 border-solid border-leaf outline-none"
                         }`}
                     >
                         <input
@@ -148,7 +148,7 @@ const RegisterPage = () => {
                 />
             </div>
             <button
-                className="w-full bg-[#FEC887] py-3 font-bold rounded-md mt-[40px]"
+                className="w-full bg-leaf py-3 font-bold rounded-md mt-[40px] text-white"
                 onClick={handleRegister}
             >
                 Register
@@ -162,7 +162,7 @@ const RegisterPage = () => {
                     </span>
                 </Link>
             </p>
-        </>
+        </div>
     );
 };
 

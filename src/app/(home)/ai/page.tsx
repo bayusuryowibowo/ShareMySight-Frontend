@@ -1,25 +1,39 @@
 "use client";
-import { useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import useFetch from "@/hooks/useFetch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { apiClient } from "@/utils/axios";
+
+interface Request {
+    text: string;
+    image: File | null;
+}
 
 const AIChat = () => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const textArea = useRef<HTMLTextAreaElement>(null);
     const [chatHistory, setChatHistory] = useFetch("/ai-chat");
-    const [imageSelected, setImageSelected] = useState<File | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<Request>({
+        text: "",
+        image: null,
+    });
+    const promisedSetState = (newState: any) =>
+        new Promise((resolve) => setChatHistory(newState, resolve));
 
     const uploadImage = async () => {
         const formData = new FormData();
 
-        if (imageSelected) {
-            formData.append("file", imageSelected);
+        if (currentRequest.image) {
+            formData.append("file", currentRequest.image);
         }
 
+        formData.append("text", currentRequest.text);
+
         try {
-            await axios.post(
-                `${process.env.NEXT_PUBLIC_SERVER_URL}/ai-chat`,
+            //first request to upload the image
+            const uploadResponse = await axios.post(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}/ai-chat/upload`,
                 formData,
                 {
                     withCredentials: true,
@@ -29,9 +43,49 @@ const AIChat = () => {
                 }
             );
 
-            console.log("Image uploaded successfully");
+            await promisedSetState([
+                ...chatHistory,
+                uploadResponse?.data?.data,
+            ]);
+
+            // second request to get the openAI response
+            const aiPromptResponse = await apiClient.post(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}/ai-chat`,
+                {
+                    promptId: uploadResponse?.data?.data?.id,
+                }
+            );
+
+            // Update the state with the modified chat data
+            const updatedChatHistory = chatHistory.map(
+                (chat: any, index: number) =>
+                    index === chatHistory.length - 1
+                        ? {
+                              ...chat,
+                              description: aiPromptResponse?.data?.description,
+                          }
+                        : chat
+            );
+
+            setChatHistory(updatedChatHistory);
         } catch (error) {
-            console.log("Error uploading file: ", error);
+            console.log(error);
+        }
+    };
+
+    const handleTextOnChange = (e: React.FormEvent<HTMLTextAreaElement>) => {
+        setCurrentRequest({
+            ...currentRequest,
+            text: (e.target as HTMLInputElement).value,
+        });
+    };
+
+    const handleImageOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setCurrentRequest({
+                ...currentRequest,
+                image: e.target.files[0],
+            });
         }
     };
 
@@ -46,27 +100,31 @@ const AIChat = () => {
                     ref={scrollContainerRef}
                 >
                     {chatHistory.map((el: any, index: number) => (
-                        <>
-                            <div
-                                key={index}
-                                className="flex gap-5 mb-5 justify-end"
-                            >
-                                <img
-                                    src={el.imageUrl}
-                                    className="max-w-[350px] max-h-[350px]"
-                                ></img>
-                                <AccountCircleIcon className="text-4xl" />
-                            </div>
-                            <div
-                                key={index}
-                                className="flex gap-5 mb-5 justify-start"
-                            >
-                                <AccountCircleIcon className="text-4xl" />
-                                <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
-                                    <div>{el.description}</div>
+                        <div key={index}>
+                            <div className="flex gap-5 mb-5 justify-end">
+                                <div className="bg-[#333449] p-3">
+                                    <img
+                                        src={el?.imageUrl}
+                                        className="max-w-[350px] max-h-[350px]"
+                                    ></img>
+                                    <p>{el?.text}</p>
                                 </div>
+                                <AccountCircleIcon className="text-4xl" />
                             </div>
-                        </>
+
+                            {el?.description && (
+                                <div className="flex gap-5 mb-5">
+                                    <img
+                                        src="/volunteer.png"
+                                        alt="volunteer profile"
+                                        className="w-10 h-10"
+                                    />
+                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                        {el.description}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     ))}
                 </div>
                 <div className="border-2 border-solid flex m-5 bg-white">
@@ -74,6 +132,7 @@ const AIChat = () => {
                         className="w-full p-3 resize-none focus:outline-none"
                         placeholder="Send message..."
                         ref={textArea}
+                        onChange={handleTextOnChange}
                     ></textarea>
                     <div className="p-3 flex h-[60px] gap-2">
                         <div className="px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
@@ -81,11 +140,8 @@ const AIChat = () => {
                                 type="file"
                                 title=" "
                                 className="opacity-0 absolute inset-0"
-                                onChange={(e) => {
-                                    if (e.target.files) {
-                                        setImageSelected(e.target.files[0]);
-                                    }
-                                }}
+                                onChange={handleImageOnChange}
+                                accept="image/png, image/gif, image/jpeg"
                             />
                             <svg
                                 stroke="currentColor"

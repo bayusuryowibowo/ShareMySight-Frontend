@@ -4,7 +4,7 @@ import VideoChatOutlinedIcon from "@mui/icons-material/VideoChatOutlined";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AuthContext } from "@/context/authContext";
+import { AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
 import Link from "next/link";
 

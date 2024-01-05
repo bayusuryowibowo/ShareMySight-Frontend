@@ -16,7 +16,7 @@ const Sidebar: FunctionComponent = () => {
             <div className="text-center text-white">Logo</div>
             <ul className="mt-[80px]">
                 <li className="transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
-                    <Link href="/">
+                    <Link href="/video-call">
                         <VideoChatOutlinedIcon className="text-3xl" />
                     </Link>
                     <div>Video</div>

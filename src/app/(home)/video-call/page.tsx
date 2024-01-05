@@ -73,6 +73,7 @@ export default function RandomVideoCallPage() {
           if (from && signal) {
             setIsCallMatching(false);
             setCallAccepted(true);
+            setCallEnded(false)
 
             const peer = new Peer({
               initiator: false,
@@ -101,18 +102,6 @@ export default function RandomVideoCallPage() {
 
             console.log("call.signal >>>>>>>", signal);
 
-            s.on("endCall", () => {
-              console.log("Incoming endCall");
-              setCallEnded(true);
-              setCallAccepted(false);
-              setCall({
-                isReceivingCall: false,
-                from: "",
-                name: "",
-                signal: {} as Peer.SignalData,
-              });
-            });
-
             peer.signal(signal);
 
             connectionRef.current = peer;
@@ -139,6 +128,7 @@ export default function RandomVideoCallPage() {
             connectionRef.current.removeAllListeners("signal");
             connectionRef.current.removeAllListeners("stream");
             connectionRef.current.destroy();
+            connectionRef.current = undefined;
           }
         }
       };
@@ -149,24 +139,39 @@ export default function RandomVideoCallPage() {
     if (socket && connectionRef.current) {
       console.log("callAccept >>>>>>>>", signal);
 
+      setCallEnded(false)
       setIsCallMatching(false);
       setCallAccepted(true);
-
-      socket.on("endCall", () => {
-        console.log("Incoming endCall");
-        setCallEnded(true);
-        setCallAccepted(false);
-        setCall({
-          isReceivingCall: false,
-          from: "",
-          name: "",
-          signal: {} as Peer.SignalData,
-        });
-      });
 
       connectionRef.current.signal(signal);
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("endCall", () => {
+        if (connectionRef.current) {
+          console.log("Incoming endCall");
+          connectionRef.current.removeAllListeners("signal");
+          connectionRef.current.removeAllListeners("stream");
+          connectionRef.current.destroy();
+          connectionRef.current = undefined;
+          setCallEnded(true);
+          setCallAccepted(false);
+          setCall({
+            isReceivingCall: false,
+            from: "",
+            name: "",
+            signal: {} as Peer.SignalData,
+          });
+          socket.off("callAccepted");
+        }
+      });
+      return () => {
+        socket.off("endCall");
+      };
+    }
+  }, [socket]);
 
   const callRandomUser = () => {
     console.log("button call ketrigger");
@@ -201,9 +206,20 @@ export default function RandomVideoCallPage() {
   };
 
   const leaveCall = () => {
-    // TO DO emit"endCall"
-    if (socket && call && callAccepted && !callEnded && !isCallMatching) {
-      connectionRef.current?.destroy();
+    console.log(callEnded, isCallMatching, connectionRef.current);
+    
+    if (
+      socket &&
+      call &&
+      callAccepted &&
+      !callEnded &&
+      !isCallMatching &&
+      connectionRef.current
+    ) {
+      connectionRef.current.removeAllListeners("signal");
+      connectionRef.current.removeAllListeners("stream");
+      connectionRef.current.destroy();
+      connectionRef.current = undefined;
       socket.emit("endCall", {
         to: call.from,
       });
@@ -215,9 +231,9 @@ export default function RandomVideoCallPage() {
         name: "",
         signal: {} as Peer.SignalData,
       });
+      socket.off("callAccepted");
     } else if (
       socket &&
-      !call &&
       !callAccepted &&
       callEnded &&
       isCallMatching

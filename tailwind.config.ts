@@ -15,11 +15,13 @@ const config: Config = {
             },
             colors: {
                 "dark-green": "#213E3A",
-                peach: "#F3EDDE",
-                sage: "#5E6B62",
-                leaf: "#054F3E",
-                avocado: "#bfd0b1",
-                mint: "#f1f6f1",
+                "dark-purple": "#303866",
+                "pale-purple": "#DEE1FA",
+                "pink-purple": "#F0E4F9",
+                lavender: "#AE8BC0",
+                "grey-purple": "#B6BAD8",
+                "midnight-blue": "#545CA0",
+                periwinkle: "#CDD0E8",
             },
             flexGrow: {
                 3: "3",

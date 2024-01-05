@@ -4,7 +4,8 @@ import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
 import useFetch from "@/hooks/useFetch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import axios from "axios";
+import SendIcon from "@mui/icons-material/Send";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
@@ -73,9 +74,9 @@ const Chat = () => {
     };
 
     return (
-        <div className="p-[30px] grow bg-[#F6F6F6] h-chatbox">
+        <div className="p-[30px] grow h-chatbox">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
-                <div className="h-[50px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-[#333449] text-white flex items-center justify-center">
+                <div className="h-[50px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-midnight-blue text-white flex items-center justify-center">
                     Ask Volunteers What you need . . .
                 </div>
                 <div
@@ -98,7 +99,7 @@ const Chat = () => {
                                         <AccountCircleIcon className="text-4xl" />
                                     )}
 
-                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                    <div className="bg-periwinkle px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
                                         <div className="font-bold">
                                             {el.user.email}
                                         </div>
@@ -112,7 +113,7 @@ const Chat = () => {
                                     key={index}
                                     className="flex gap-5 mb-5 justify-end"
                                 >
-                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                    <div className="bg-pink-purple px-5 py-2 rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
                                         <div className="font-bold">
                                             {el.user.email}
                                         </div>
@@ -133,14 +134,14 @@ const Chat = () => {
                         }
                     })}
                 </div>
-                <div className="border-2 border-solid flex m-5 bg-white">
+                <div className="flex m-5 bg-pink-purple">
                     <textarea
-                        className="w-full p-3 resize-none focus:outline-none"
+                        className="w-full p-3 resize-none focus:outline-none bg-pink-purple text-dark-purple"
                         placeholder="Send message..."
                         onChange={handleOnChange}
                         ref={textArea}
                     ></textarea>
-                    <div className="p-3 flex h-[60px] gap-2">
+                    <div className="flex items-center h-full gap-2 p-5">
                         <div className="px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
                             <input
                                 type="file"
@@ -152,25 +153,11 @@ const Chat = () => {
                                     }
                                 }}
                             />
-                            <svg
-                                stroke="currentColor"
-                                fill="currentColor"
-                                strokeWidth="0"
-                                viewBox="0 0 512 512"
-                                className="css-119zpey"
-                                height="1em"
-                                width="1em"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path d="M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z"></path>
-                            </svg>
+                            <AttachFileIcon className="text-3xl" />
                         </div>
-                        <button
-                            className="bg-beige px-3 py-1 rounded-md"
-                            onClick={handleSendMessage}
-                        >
-                            Send
-                        </button>
+                        <div onClick={handleSendMessage}>
+                            <SendIcon className="text-3xl" />
+                        </div>
                     </div>
                 </div>
             </div>

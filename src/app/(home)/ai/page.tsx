@@ -105,6 +105,13 @@ const AIChat = () => {
         getAIResponse();
     }, [currentPromptId]);
 
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop =
+                scrollContainerRef.current.scrollHeight;
+        }
+    }, [chatHistory]);
+
     return (
         <div className="p-[30px] grow h-chatbox">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">

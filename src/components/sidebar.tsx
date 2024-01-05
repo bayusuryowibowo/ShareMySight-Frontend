@@ -4,7 +4,7 @@ import VideoChatIcon from "@mui/icons-material/VideoChat";
 import ChatIcon from "@mui/icons-material/Chat";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AuthContext } from "@/context/AuthContext";
+import { AuthContext } from "@/context/authContext";
 import { useContext } from "react";
 import Link from "next/link";
 
@@ -14,10 +14,10 @@ const Sidebar: FunctionComponent = () => {
     return (
         <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-dark-purple border-r-[5px] border-grey-purple">
             <div className="text-center text-white">Logo</div>
-            <ul className="mt-[80px]">
-                <li className="transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+            <ul className="mt-[120px]">
+                <li className="transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/video-call">
-                        <VideoChatOutlinedIcon className="text-3xl" />
+                        <VideoChatIcon className="text-3xl" />
                     </Link>
                     <div>Video</div>
                 </li>

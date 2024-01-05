@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const login = (token: string) => {
         cookies.set("access_token", token);
-        router.push("/");
+        router.push("/video-call");
     };
 
     const logout = () => {

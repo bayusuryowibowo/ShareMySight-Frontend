@@ -41,17 +41,7 @@ const config: Config = {
                 scrollup: "scrollup 1s forward",
             },
         },
-      },
-      animation: {
-        scrollup: "scrollup 1s forward",
-      },
     },
-  },
-  plugins: [
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/aspect-ratio"),
-    require("@tailwindcss/container-queries"),
-  ],
+    plugins: [],
 };
 export default config;

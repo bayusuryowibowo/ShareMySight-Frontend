@@ -53,13 +53,14 @@ const SelectOption: FunctionComponent<Props> = ({
                         ...baseStyles,
                         borderWidth: "2px",
                         borderColor: "#E4E7EB",
-                        color: "#606060",
+                        color: "#ae8bc0",
+                        background: "#F0E4F9",
                         boxShadow: "0 !important",
                         "&:hover": {},
                     }),
                     placeholder: (baseStyles) => ({
                         ...baseStyles,
-                        color: "#606060",
+                        color: "#ae8bc0",
                     }),
                 }}
             />

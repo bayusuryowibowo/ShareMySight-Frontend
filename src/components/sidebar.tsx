@@ -1,8 +1,8 @@
 "use client";
 import { FunctionComponent } from "react";
-import VideoChatOutlinedIcon from "@mui/icons-material/VideoChatOutlined";
-import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
-import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
+import VideoChatIcon from "@mui/icons-material/VideoChat";
+import ChatIcon from "@mui/icons-material/Chat";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
@@ -12,7 +12,7 @@ const Sidebar: FunctionComponent = () => {
     const { logout } = useContext(AuthContext);
 
     return (
-        <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-[#333449]">
+        <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-dark-purple border-r-[5px] border-grey-purple">
             <div className="text-center text-white">Logo</div>
             <ul className="mt-[80px]">
                 <li className="transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
@@ -21,20 +21,21 @@ const Sidebar: FunctionComponent = () => {
                     </Link>
                     <div>Video</div>
                 </li>
-                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/chat">
-                        <ChatOutlinedIcon className="text-3xl" />
+                        <ChatIcon className="text-3xl" />
                     </Link>
                     <div>Chat</div>
                 </li>
-                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center">
+                <li className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/ai">
-                        <SmartToyOutlinedIcon className="text-3xl" />
+                        <SmartToyIcon className="text-3xl" />
                     </Link>
                     <div>Ask AI</div>
                 </li>
+                <div className="border-2 mt-5"></div>
                 <li
-                    className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-[#BCD9B5] p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
+                    className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
                     onClick={() => {
                         logout();
                     }}

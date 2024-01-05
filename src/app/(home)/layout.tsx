@@ -9,7 +9,7 @@ export default function HomeLayout({
     return (
         <div className="flex">
             <Sidebar />
-            <div className="grow flex flex-col">
+            <div className="grow flex flex-col bg-pale-purple">
                 <Navbar />
                 {children}
             </div>

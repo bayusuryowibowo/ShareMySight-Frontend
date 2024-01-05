@@ -17,7 +17,6 @@ type Call = {
 type CallUserRequest = { from: string; name: string; signal: Peer.SignalData };
 
 export default function RandomVideoCallPage() {
-  const [idToCall, setIdToCall] = useState("");
   const [callAccepted, setCallAccepted] = useState<boolean>(false);
   const [callEnded, setCallEnded] = useState<boolean>(false);
   const [stream, setStream] = useState<MediaStream | undefined>();
@@ -59,21 +58,8 @@ export default function RandomVideoCallPage() {
         transports: ["websocket"],
       });
 
-      console.log("first userVideo >>>", userVideo.current);
-
       setSocket(s);
       s.on("me", (id: string) => setMe(id));
-      s.on(
-        "callUser",
-        ({ from, name: callerName, signal }: CallUserRequest) => {
-          setCall({
-            isReceivingCall: true,
-            from,
-            name: callerName,
-            signal,
-          });
-        }
-      );
 
       s.on(
         "startRandomCall",
@@ -112,7 +98,20 @@ export default function RandomVideoCallPage() {
                 userVideo.current.srcObject = currentStream;
               }
             });
+
             console.log("call.signal >>>>>>>", signal);
+
+            s.on("endCall", () => {
+              console.log("Incoming endCall");
+              setCallEnded(true);
+              setCallAccepted(false);
+              setCall({
+                isReceivingCall: false,
+                from: "",
+                name: "",
+                signal: {} as Peer.SignalData,
+              });
+            });
 
             peer.signal(signal);
 
@@ -123,11 +122,51 @@ export default function RandomVideoCallPage() {
 
       return () => {
         if (socket) {
+          s.removeListener("callAccepted", handleCallAccepted);
+          s.removeAllListeners("me");
+          s.removeAllListeners("startRandomCall");
+          s.removeAllListeners("endcall");
+
+          if (call && callAccepted && !callEnded && !isCallMatching) {
+            s.emit("endCall", {
+              to: call.from,
+            });
+          }
+
           s.disconnect();
+
+          if (connectionRef.current) {
+            connectionRef.current.removeAllListeners("signal");
+            connectionRef.current.removeAllListeners("stream");
+            connectionRef.current.destroy();
+          }
         }
       };
     }
   }, [stream]);
+
+  const handleCallAccepted = (signal: Peer.SignalData) => {
+    if (socket && connectionRef.current) {
+      console.log("callAccept >>>>>>>>", signal);
+
+      setIsCallMatching(false);
+      setCallAccepted(true);
+
+      socket.on("endCall", () => {
+        console.log("Incoming endCall");
+        setCallEnded(true);
+        setCallAccepted(false);
+        setCall({
+          isReceivingCall: false,
+          from: "",
+          name: "",
+          signal: {} as Peer.SignalData,
+        });
+      });
+
+      connectionRef.current.signal(signal);
+    }
+  };
 
   const callRandomUser = () => {
     console.log("button call ketrigger");
@@ -153,14 +192,7 @@ export default function RandomVideoCallPage() {
         }
       });
 
-      socket.on("callAccepted", (signal) => {
-        console.log("callAccept >>>>>>>>", signal);
-
-        setIsCallMatching(false);
-        setCallAccepted(true);
-
-        connectionRef.current?.signal(signal);
-      });
+      socket.on("callAccepted", handleCallAccepted);
 
       connectionRef.current = peer;
     } else {
@@ -169,11 +201,30 @@ export default function RandomVideoCallPage() {
   };
 
   const leaveCall = () => {
-    connectionRef.current?.destroy();
     // TO DO emit"endCall"
-    setIsCallMatching(false);
-    setCallEnded(true);
-    setCallAccepted(false);
+    if (socket && call && callAccepted && !callEnded && !isCallMatching) {
+      connectionRef.current?.destroy();
+      socket.emit("endCall", {
+        to: call.from,
+      });
+      setCallEnded(true);
+      setCallAccepted(false);
+      setCall({
+        isReceivingCall: false,
+        from: "",
+        name: "",
+        signal: {} as Peer.SignalData,
+      });
+    } else if (
+      socket &&
+      !call &&
+      !callAccepted &&
+      callEnded &&
+      isCallMatching
+    ) {
+      socket.emit("cancelCall");
+      setIsCallMatching(false);
+    }
   };
 
   return (
@@ -199,25 +250,27 @@ export default function RandomVideoCallPage() {
             <video playsInline ref={userVideo} autoPlay width="600" />
           )}
         </div>
-        <div className=" flex flex-row gap-5 justify-end items-center p-1 border">
-          <Button
-            disabled={isCallMatching}
-            icon={
-              isCallMatching ? (
-                <RefreshIcon className="animate-spin" />
-              ) : (
-                <CallIcon />
-              )
-            }
-            className={
-              "flex flex-row justify-center gap-5 p-2 rounded w-40 " +
-              (isCallMatching
-                ? " bg-gray-600 text-white"
-                : "bg-green-500 hover:bg-green-600")
-            }
-            onClick={callRandomUser}
-            text={isCallMatching ? "Matching ..." : "Call"}
-          />
+        <div className=" flex flex-row gap-5 justify-end items-center p-1 pr-5">
+          {!callAccepted && (
+            <Button
+              disabled={isCallMatching}
+              icon={
+                isCallMatching ? (
+                  <RefreshIcon className="animate-spin" />
+                ) : (
+                  <CallIcon />
+                )
+              }
+              className={
+                "flex flex-row justify-center gap-5 p-2 rounded w-40 " +
+                (isCallMatching
+                  ? " bg-gray-600 text-white"
+                  : "bg-green-500 hover:bg-green-600")
+              }
+              onClick={callRandomUser}
+              text={isCallMatching ? "Matching..." : "Call"}
+            />
+          )}
           {(isCallMatching || callAccepted) && (
             <Button
               icon={<CallEnd />}

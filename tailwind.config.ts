@@ -15,6 +15,10 @@ const config: Config = {
             },
             colors: {
                 "dark-green": "#213E3A",
+                "dark-purple": "#303866",
+                "pale-purple": "#DEE1FA",
+                "pink-purple": "#F0E4F9",
+                lavender: "#AE8BC0",
                 peach: "#F3EDDE",
                 sage: "#5E6B62",
                 leaf: "#054F3E",

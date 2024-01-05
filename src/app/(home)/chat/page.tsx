@@ -77,7 +77,7 @@ const Chat = () => {
         <div className="p-[30px] grow h-chatbox">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
                 <div className="h-[50px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-midnight-blue text-white flex items-center justify-center">
-                    Ask Volunteers What you need . . .
+                    <p className="p-3"> Ask Volunteers What you need . . .</p>
                 </div>
                 <div
                     className="grow p-5 overflow-y-scroll scrollbar"
@@ -99,7 +99,7 @@ const Chat = () => {
                                         <AccountCircleIcon className="text-4xl" />
                                     )}
 
-                                    <div className="bg-periwinkle px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
+                                    <div className="bg-periwinkle px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
                                         <div className="font-bold">
                                             {el.user.email}
                                         </div>

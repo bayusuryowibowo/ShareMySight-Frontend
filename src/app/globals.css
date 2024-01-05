@@ -69,7 +69,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    fill: #303866;
+    fill: #545ca0;
     width: 50vmax;
     z-index: -1;
     animation: move 10s ease-in-out infinite;
@@ -181,4 +181,8 @@ div#videos > video {
 input.authInput::placeholder,
 select.authInput::placeholder {
     color: #ae8bc0;
+}
+
+textArea::placeholder {
+    color: #545ca0;
 }

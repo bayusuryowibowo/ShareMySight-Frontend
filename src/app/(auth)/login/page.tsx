@@ -53,7 +53,7 @@ export default function LoginPage() {
                         placeholder="Enter Email"
                         onChange={handleOnChange}
                         error={false}
-                        inputClassName="rounded-lg py-2 px-3 w-full placeholder:text-[#606060] focus:outline-none bg-pink-purple authInput"
+                        inputClassName="rounded-lg py-2 px-3 w-full placeholder:text-[#606060] focus:outline-none bg-pink-purple authInput text-dark-purple"
                     />
                     <Input
                         type="password"
@@ -61,7 +61,7 @@ export default function LoginPage() {
                         placeholder="Enter Your Password"
                         onChange={handleOnChange}
                         error={false}
-                        inputClassName="rounded-lg py-2 px-3  w-full placeholder:text-[#606060] focus:outline-none bg-pink-purple authInput"
+                        inputClassName="rounded-lg py-2 px-3  w-full placeholder:text-[#606060] focus:outline-none bg-pink-purple authInput text-dark-purple"
                     />
                 </div>
                 <p className="my-[25px] text-dark-purple">

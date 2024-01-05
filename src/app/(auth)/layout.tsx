@@ -22,7 +22,7 @@ export default function AuthLayout({
                 </div>
                 <div
                     className={
-                        "w-full min-h-screen flex flex-col items-center justify-center bg-pale-purple overlay relative"
+                        "w-full min-h-screen flex flex-col items-center justify-center bg-pale-purple relative overlay"
                     }
                     style={{ height: "100vh" }}
                 >

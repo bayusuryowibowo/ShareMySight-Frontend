@@ -24,7 +24,13 @@ const Sidebar: FunctionComponent = () => {
 
     return (
         <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-dark-purple border-r-[5px] border-grey-purple">
-            <div className="text-center text-white">Logo</div>
+            <div className="text-center text-white">
+                <img
+                    src="/logo.png"
+                    alt="logo"
+                    className="w-[50px] h-[50px] object-contain mx-auto"
+                />
+            </div>
             <ul className="mt-[120px]">
                 <li className="transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center">
                     <Link href="/video-call">

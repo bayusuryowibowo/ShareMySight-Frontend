@@ -240,30 +240,34 @@ export default function RandomVideoCallPage() {
 
     return (
         <div className="p-[30px] grow bg-pale-purple h-chatbox">
-            <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
-                <div className=" flex flex-row gap-5 justify-center">
+            <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-midnight-blue">
+                <div className=" flex flex-row gap-5 h-full p-[25px] pb-0">
                     {/* my video */}
-                    {stream && (
+                    {stream ? (
                         <video
                             playsInline
                             muted
                             ref={myVideo}
                             autoPlay
-                            className="w-[600px]"
+                            className="h-full w-1/2"
                         />
+                    ) : (
+                        <div className="h-full w-1/2 bg-black rounded-tl-[10px]"></div>
                     )}
 
                     {/* user's video */}
-                    {callAccepted && !callEnded && (
+                    {callAccepted && !callEnded ? (
                         <video
                             playsInline
                             ref={userVideo}
                             autoPlay
                             width="600"
                         />
+                    ) : (
+                        <div className="h-full w-1/2 bg-black rounded-tr-[10px]"></div>
                     )}
                 </div>
-                <div className=" flex flex-row gap-5 justify-end items-center p-1 pr-5">
+                <div className=" flex flex-row gap-5 justify-end items-center pr-[25px] py-[15px]">
                     {!callAccepted && (
                         <Button
                             disabled={isCallMatching}
@@ -298,3 +302,7 @@ export default function RandomVideoCallPage() {
         </div>
     );
 }
+
+/*
+
+*/

@@ -14,12 +14,15 @@ interface ApiResponse {
 const useFetch = (url: string) => {
     const [data, setData] = useState<any>([]);
     const { logout } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        setLoading(true);
         apiClient
             .get<ApiResponse>(url)
             .then(({ data }) => {
                 setData(data.data);
+                setLoading(false);
             })
             .catch((error) => {
                 ErrorHandler.handleError(error);
@@ -30,10 +33,11 @@ const useFetch = (url: string) => {
                 ) {
                     logout();
                 }
+                setLoading(false);
             });
     }, []);
 
-    return [data, setData];
+    return { data, setData, loading };
 };
 
 export default useFetch;

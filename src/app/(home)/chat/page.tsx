@@ -1,20 +1,19 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, CSSProperties } from "react";
 import SockJS from "sockjs-client";
 import { Stomp, CompatClient } from "@stomp/stompjs";
 import useFetch from "@/hooks/useFetch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SendIcon from "@mui/icons-material/Send";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { MoonLoader } from "react-spinners";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
     const [isConnected, setIsConnected] = useState<Boolean>(false);
     const [currentMessage, setCurrentMessage] = useState<string>("");
-    const [messageHistory, setMessageHistory] = useFetch("/chat");
+    const { data, setData, loading } = useFetch("/chat");
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const textArea = useRef<HTMLTextAreaElement>(null);
-    const [imageSelected, setImageSelected] = useState<File | null>(null);
 
     useEffect(() => {
         if (isConnected) {
@@ -29,7 +28,7 @@ const Chat = () => {
 
                 stomp.subscribe("/topic/messages", (response) => {
                     const newMessage = JSON.parse(response.body);
-                    setMessageHistory((prevMessages: any) => [
+                    setData((prevMessages: any) => [
                         ...prevMessages,
                         newMessage,
                     ]);
@@ -49,7 +48,7 @@ const Chat = () => {
             scrollContainerRef.current.scrollTop =
                 scrollContainerRef.current.scrollHeight;
         }
-    }, [messageHistory]);
+    }, [data]);
 
     useEffect(() => {
         setIsConnected(true);
@@ -83,56 +82,72 @@ const Chat = () => {
                     className="grow p-5 overflow-y-scroll scrollbar"
                     ref={scrollContainerRef}
                 >
-                    {messageHistory.map((el: any, index: any) => {
-                        if (
-                            el.user.email !== localStorage.getItem("username")
-                        ) {
-                            return (
-                                <div key={index} className="flex gap-5 mb-5">
-                                    {el.user.role === "volunteer" ? (
-                                        <img
-                                            src="/volunteer.png"
-                                            alt="volunteer profile"
-                                            className="w-10 h-10"
-                                        />
-                                    ) : (
-                                        <AccountCircleIcon className="text-4xl" />
-                                    )}
+                    {!loading ? (
+                        data.map((el: any, index: any) => {
+                            if (
+                                el.user.email !==
+                                localStorage.getItem("username")
+                            ) {
+                                return (
+                                    <div
+                                        key={index}
+                                        className="flex gap-5 mb-5"
+                                    >
+                                        {el.user.role === "volunteer" ? (
+                                            <img
+                                                src="/volunteer.png"
+                                                alt="volunteer profile"
+                                                className="w-10 h-10"
+                                            />
+                                        ) : (
+                                            <AccountCircleIcon className="text-4xl" />
+                                        )}
 
-                                    <div className="bg-periwinkle px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
-                                        <div className="font-bold">
-                                            {el.user.email}
+                                        <div className="bg-periwinkle px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px]">
+                                            <div className="font-bold">
+                                                {el.user.email}
+                                            </div>
+                                            <div>{el.message}</div>
                                         </div>
-                                        <div>{el.message}</div>
                                     </div>
-                                </div>
-                            );
-                        } else {
-                            return (
-                                <div
-                                    key={index}
-                                    className="flex gap-5 mb-5 justify-end"
-                                >
-                                    <div className="bg-pink-purple px-5 py-2 rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
-                                        <div className="font-bold">
-                                            {el.user.email}
+                                );
+                            } else {
+                                return (
+                                    <div
+                                        key={index}
+                                        className="flex gap-5 mb-5 justify-end"
+                                    >
+                                        <div className="bg-pink-purple px-5 py-2 rounded-tl-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
+                                            <div className="font-bold">
+                                                {el.user.email}
+                                            </div>
+                                            <div>{el.message}</div>
                                         </div>
-                                        <div>{el.message}</div>
-                                    </div>
 
-                                    {el.user.role === "volunteer" ? (
-                                        <img
-                                            src="/volunteer.png"
-                                            alt="volunteer profile"
-                                            className="w-10 h-10"
-                                        />
-                                    ) : (
-                                        <AccountCircleIcon className="text-4xl" />
-                                    )}
-                                </div>
-                            );
-                        }
-                    })}
+                                        {el.user.role === "volunteer" ? (
+                                            <img
+                                                src="/volunteer.png"
+                                                alt="volunteer profile"
+                                                className="w-10 h-10"
+                                            />
+                                        ) : (
+                                            <AccountCircleIcon className="text-4xl" />
+                                        )}
+                                    </div>
+                                );
+                            }
+                        })
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <MoonLoader
+                                color="#303866"
+                                loading={loading}
+                                size={60}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </div>
+                    )}
                 </div>
                 <div className="flex m-5 bg-pink-purple">
                     <textarea
@@ -142,19 +157,6 @@ const Chat = () => {
                         ref={textArea}
                     ></textarea>
                     <div className="flex items-center h-full gap-2 p-5">
-                        <div className="px-3 py-1 rounded-md w-[50px] relative flex items-center justify-center cursor-pointer">
-                            <input
-                                type="file"
-                                title=" "
-                                className="opacity-0 absolute inset-0"
-                                onChange={(e) => {
-                                    if (e.target.files) {
-                                        setImageSelected(e.target.files[0]);
-                                    }
-                                }}
-                            />
-                            <AttachFileIcon className="text-3xl" />
-                        </div>
                         <div onClick={handleSendMessage}>
                             <SendIcon className="text-3xl" />
                         </div>

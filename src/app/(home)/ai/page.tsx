@@ -6,6 +6,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { apiClient } from "@/utils/axios";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
+import { MoonLoader, PulseLoader } from "react-spinners";
 
 interface Request {
     text: string;
@@ -15,12 +16,13 @@ interface Request {
 const AIChat = () => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const textArea = useRef<HTMLTextAreaElement>(null);
-    const [chatHistory, setChatHistory] = useFetch("/ai-chat");
+    const { data, setData, loading } = useFetch("/ai-chat");
     const [currentRequest, setCurrentRequest] = useState<Request>({
         text: "",
         image: null,
     });
     const [currentPromptId, setCurrentPromptId] = useState<number | null>(null);
+    const [textResponseLoading, setTextResponseLoading] = useState(false);
 
     const uploadImage = async () => {
         const formData = new FormData();
@@ -30,9 +32,7 @@ const AIChat = () => {
         }
 
         formData.append("text", currentRequest.text);
-
         try {
-            //first request to upload the image
             const uploadResponse = await axios.post(
                 `${process.env.NEXT_PUBLIC_SERVER_URL}/ai-chat/upload`,
                 formData,
@@ -44,7 +44,7 @@ const AIChat = () => {
                 }
             );
 
-            setChatHistory([...chatHistory, uploadResponse?.data?.data]);
+            setData([...data, uploadResponse?.data?.data]);
             setCurrentPromptId(uploadResponse?.data?.data?.id);
         } catch (error) {
             console.log(error);
@@ -55,7 +55,7 @@ const AIChat = () => {
         if (currentPromptId == null) return;
 
         try {
-            // second request to get the openAI response
+            setTextResponseLoading(true);
             const aiPromptResponse = await apiClient.post(
                 `${process.env.NEXT_PUBLIC_SERVER_URL}/ai-chat`,
                 {
@@ -63,24 +63,21 @@ const AIChat = () => {
                 }
             );
 
-            console.log(aiPromptResponse);
-
+            setTextResponseLoading(false);
             // Update the state with the modified chat data
-            const updatedChatHistory = chatHistory.map(
-                (chat: any, index: number) =>
-                    index === chatHistory.length - 1
-                        ? {
-                              ...chat,
-                              description:
-                                  aiPromptResponse?.data?.data?.description,
-                          }
-                        : chat
+            const updateddata = data.map((chat: any, index: number) =>
+                index === data.length - 1
+                    ? {
+                          ...chat,
+                          description:
+                              aiPromptResponse?.data?.data?.description,
+                      }
+                    : chat
             );
 
-            console.log(updatedChatHistory);
-
-            setChatHistory(updatedChatHistory);
+            setData(updateddata);
         } catch (error) {
+            setTextResponseLoading(false);
             console.log(error);
         }
     };
@@ -110,7 +107,7 @@ const AIChat = () => {
             scrollContainerRef.current.scrollTop =
                 scrollContainerRef.current.scrollHeight;
         }
-    }, [chatHistory]);
+    }, [data]);
 
     return (
         <div className="p-[30px] grow h-chatbox">
@@ -125,23 +122,23 @@ const AIChat = () => {
                     className="grow p-5 overflow-y-scroll scrollbar"
                     ref={scrollContainerRef}
                 >
-                    {chatHistory.map((el: any, index: number) => (
-                        <div key={index}>
-                            <div className="flex gap-5 mb-5 justify-end">
-                                <div className="bg-pink-purple p-2 rounded-tl-[10px] rounded-bl-[10px] rounded-br-[10px] flex flex-col max-w-[250px]">
-                                    <img
-                                        src={el?.imageUrl}
-                                        className="max-h-[250px]"
-                                        style={{ objectFit: "cover" }}
-                                    ></img>
-                                    <p className="text-dark-purple text-end mt-1">
-                                        {el?.text}
-                                    </p>
+                    {!loading ? (
+                        data.map((el: any, index: number) => (
+                            <div key={index}>
+                                <div className="flex gap-5 mb-5 justify-end">
+                                    <div className="bg-pink-purple p-2 rounded-tl-[10px] rounded-bl-[10px] rounded-br-[10px] flex flex-col max-w-[250px]">
+                                        <img
+                                            src={el?.imageUrl}
+                                            className="max-h-[250px]"
+                                            style={{ objectFit: "cover" }}
+                                        ></img>
+                                        <p className="text-dark-purple text-end mt-1">
+                                            {el?.text}
+                                        </p>
+                                    </div>
+                                    <AccountCircleIcon className="text-4xl" />
                                 </div>
-                                <AccountCircleIcon className="text-4xl" />
-                            </div>
 
-                            {el?.description && (
                                 <div className="flex gap-5 mb-5">
                                     <img
                                         className="_7_i_XA w-10 h-10"
@@ -150,13 +147,36 @@ const AIChat = () => {
                                         draggable="false"
                                         alt="Artificial Intelligence, Technology, Ai, Chip, Science"
                                     />
-                                    <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
-                                        {el.description}
-                                    </div>
+                                    {textResponseLoading &&
+                                    index === data.length - 1 ? (
+                                        <div className="flex justify-center items-center pl-2">
+                                            <PulseLoader
+                                                color="#303866"
+                                                loading={true}
+                                                size={10}
+                                                aria-label="Loading Spinner"
+                                                data-testid="loader"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="bg-[#E9EAF6] px-5 py-2 rounded-tr-[20px] rounded-br-[20px] rounded-bl-[20px] max-w-[50%]">
+                                            {el.description}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <MoonLoader
+                                color="#303866"
+                                loading={loading}
+                                size={60}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
                         </div>
-                    ))}
+                    )}
                 </div>
                 <div className="border-2 border-solid flex m-5 bg-pink-purple">
                     <textarea

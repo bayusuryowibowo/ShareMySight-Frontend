@@ -23,14 +23,14 @@ interface LanguageOptions {
 
 const RegisterPage = () => {
     const router = useRouter();
-    const [languages] = useFetch("/language");
-    const languagesOptions: LanguageOptions[] = useMemo(
+    const { data } = useFetch("/language");
+    const dataOptions: LanguageOptions[] = useMemo(
         () =>
-            languages.map((language: { id: string; languageName: string }) => ({
+            data.map((language: { id: string; languageName: string }) => ({
                 label: language.languageName,
                 value: language.id,
             })),
-        [languages]
+        [data]
     );
 
     const [userData, setUserData] = useState<UserData>({
@@ -155,7 +155,7 @@ const RegisterPage = () => {
                             inputClassName="bg-pink-purple rounded-md py-2 px-3  w-full authInput focus:outline-none text-dark-purple"
                         />
                         <SelectOption
-                            options={languagesOptions}
+                            options={dataOptions}
                             name="languageId"
                             placeholder="Select Language"
                             className="focus:outline-none"

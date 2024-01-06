@@ -34,7 +34,6 @@ export default function RandomVideoCallPage() {
     const connectionRef = useRef<Peer.Instance | undefined>();
     const [socket, setSocket] = useState<Socket>();
     const [isCallMatching, setIsCallMatching] = useState<boolean>(false);
-    const asyncStreamState = useRef(null);
 
     const setAsyncStreamState = async (newState: MediaStream) => {
         setStream(newState);
@@ -42,7 +41,6 @@ export default function RandomVideoCallPage() {
     };
 
     useEffect(() => {
-        // Get user media and set up stream
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: true })
             .then(async (currentStream) => {
@@ -51,20 +49,11 @@ export default function RandomVideoCallPage() {
                     myVideo.current.srcObject = currentStream;
                 }
             });
-
-        // Clean up the media stream when the component unmounts
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach((track) => {
-                    track.stop();
-                });
-            }
-        };
     }, []);
 
     useEffect(() => {
         if (!socket && stream) {
-            const s = io(`${process.env.NEXT_PUBLIC_SERVER_URL}:8081`, {
+            const s = io(`https://sharemysight.productapic1.com:8081`, {
                 reconnection: false,
                 transports: ["websocket"],
             });
@@ -250,11 +239,8 @@ export default function RandomVideoCallPage() {
     };
 
     return (
-        <div className="p-[30px] grow bg-[#F6F6F6] h-chatbox">
+        <div className="p-[30px] grow bg-pale-purple h-chatbox">
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-white">
-                <div className="h-[50px] rounded-tl-[20px] rounded-tr-[20px] w-full bg-[#333449] text-white flex items-center justify-center">
-                    Call anyone to get assistance
-                </div>
                 <div className=" flex flex-row gap-5 justify-center">
                     {/* my video */}
                     {stream && (

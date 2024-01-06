@@ -17,17 +17,17 @@
 }
 
 .eye {
-    background: #303866;
-    height: 200px;
-    width: 200px;
+    background: #dee1fa;
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
     border-radius: 75% 0;
     overflow: hidden;
-    animation: eye-open 3s forwards;
     animation-delay: 1s;
     border: 10px solid #dee1fa;
+    height: 100px;
+    width: 100px;
+    border: 3px solid #dee1fa;
 }
 
 .ball {
@@ -39,7 +39,10 @@
     animation: eye-open-ball 3s forwards;
     animation-delay: 1s;
     border: 10px solid #dee1fa;
+    width: 80px !important;
+    height: 80px !important;
 }
+
 .shut {
     width: 300px;
     height: 200px;
@@ -76,36 +79,53 @@
     transform-origin: 50% 50%;
 }
 
-@keyframes eye-open {
-    0% {
+@media (min-width: 480px) {
+    .eye {
+        height: 130px;
+        width: 130px;
+    }
+}
+
+@media (min-width: 780px) {
+    .eye {
+        height: 180px;
+        width: 180px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .eye {
         height: 200px;
         width: 200px;
     }
-    70% {
-        height: 230px;
-        width: 230px;
+
+    .ball {
+        width: 100px !important;
+        height: 100px !important;
     }
-    100% {
-        height: 200px;
-        width: 200px;
+}
+
+@media (min-width: 1560px) {
+    .eye {
+        width: 220px;
+        height: 220px;
+    }
+
+    .ball {
+        width: 110px !important;
+        height: 110px !important;
     }
 }
 
 @keyframes eye-open-ball {
     0% {
         transform: translate(-15%, -15%);
-        width: 80px;
-        height: 80px;
     }
     70% {
         transform: translate(-50%, -50%);
-        width: 110px;
-        height: 110px;
     }
     100% {
         transform: translate(-50%, -50%);
-        width: 90px;
-        height: 90px;
     }
 }
 

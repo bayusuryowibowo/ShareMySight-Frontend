@@ -70,107 +70,118 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="p-2">
-            <div className="text-center font-bold text-4xl text-dark-purple">
-                Register
-            </div>
-            <p className="text-center mt-3 text-dark-purple">
-                Hey, Enter your details to get sign up your account
+        <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] shadow-md flex m-2 md:w-[70%] xl:p-4">
+            <p className="border-r-2 flex justify-center items-center">
+                <img
+                    src="welcome.png"
+                    alt="welcome"
+                    className="object-fit-cover hidden lg:block lg:w-[600px] xl:w-[700px] 2xl:w-[800px]"
+                />
             </p>
-            <div className="flex justify-center gap-8 my-8">
-                <div className="max-w-[150px] w-full">
-                    <div
-                        className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
-                            userData.role === UserRole.Volunteer &&
-                            "border-2 border-solid border-dark-purple outline-none"
-                        }`}
-                    >
+            <div className="p-5 w-full">
+                <div className="p-2">
+                    <div className="text-center font-bold text-3xl text-dark-purple xl:text-4xl">
+                        Register
+                    </div>
+                    <p className="text-center mt-3 text-dark-purple text-sm lg:text-md xl:text-[16px]">
+                        Hey, Enter your details to get sign up your account
+                    </p>
+                    <div className="flex justify-center gap-8 my-8">
+                        <div className="max-w-[150px] w-full">
+                            <div
+                                className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
+                                    userData.role === UserRole.Volunteer &&
+                                    "border-2 border-solid border-dark-purple outline-none"
+                                }`}
+                            >
+                                <Input
+                                    type="radio"
+                                    name="role"
+                                    value={UserRole.Volunteer}
+                                    onChange={handleOnChange}
+                                    inputClassName="absolute inset-0 opacity-0"
+                                    error={false}
+                                />
+                                <img
+                                    src="https://media-public.canva.com/JbmNs/MAFIVoJbmNs/1/tl.png"
+                                    alt="Role: volunteer"
+                                    className="object-cover h-[60px] mx-auto xl:h-[80px]"
+                                />
+                            </div>
+                            <p className="text-center mt-2 text-dark-purple text-sm">
+                                I'm a volunteer
+                            </p>
+                        </div>
+                        <div className="max-w-[150px] w-full">
+                            <div
+                                className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
+                                    userData.role === UserRole.NeedAssistance &&
+                                    "border-2 border-solid border-dark-purple outline-none"
+                                }`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="role"
+                                    value={UserRole.NeedAssistance}
+                                    onChange={handleOnChange}
+                                    className="absolute inset-0 opacity-0"
+                                />
+                                <img
+                                    src="https://media-public.canva.com/YQpyY/MAFdzDYQpyY/1/tl.png"
+                                    alt="Role: need assistance"
+                                    className="object-cover h-[60px] mx-auto xl:h-[80px]"
+                                ></img>
+                            </div>
+                            <p className="text-center mt-2 text-dark-purple text-sm">
+                                I need assistance
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col mt-[30px] gap-4">
                         <Input
-                            type="radio"
-                            name="role"
-                            value={UserRole.Volunteer}
+                            type="email"
+                            name="email"
+                            placeholder="Enter Email"
                             onChange={handleOnChange}
-                            inputClassName="absolute inset-0 opacity-0"
                             error={false}
+                            inputClassName="bg-pink-purple rounded-md py-2 px-3 w-full authInput focus:outline-none text-dark-purple"
                         />
-                        <img
-                            src="https://media-public.canva.com/JbmNs/MAFIVoJbmNs/1/tl.png"
-                            alt="Role: volunteer"
-                            className="object-cover h-[80px] mx-auto"
-                        />
-                    </div>
-                    <p className="text-center mt-2 text-dark-purple">
-                        I'm a volunteer
-                    </p>
-                </div>
-                <div className="max-w-[150px] w-full">
-                    <div
-                        className={`cursor-pointer outline-dotted p-4 rounded-md relative ${
-                            userData.role === UserRole.NeedAssistance &&
-                            "border-2 border-solid border-dark-purple outline-none"
-                        }`}
-                    >
-                        <input
-                            type="radio"
-                            name="role"
-                            value={UserRole.NeedAssistance}
+                        <Input
+                            type="password"
+                            name="password"
+                            placeholder="Enter Your Password"
                             onChange={handleOnChange}
-                            className="absolute inset-0 opacity-0"
+                            error={false}
+                            inputClassName="bg-pink-purple rounded-md py-2 px-3  w-full authInput focus:outline-none text-dark-purple"
                         />
-                        <img
-                            src="https://media-public.canva.com/YQpyY/MAFdzDYQpyY/1/tl.png"
-                            alt="Role: need assistance"
-                            className="object-cover h-[80px] mx-auto"
-                        ></img>
+                        <SelectOption
+                            options={languagesOptions}
+                            name="languageId"
+                            placeholder="Select Language"
+                            className="focus:outline-none"
+                            handleSelectChange={handleSelectChange}
+                        />
                     </div>
-                    <p className="text-center mt-2 text-dark-purple">
-                        I need assistance
+                    <button
+                        className="w-full bg-dark-purple py-2 font-bold rounded-md mt-[35px] text-pink-purple text-sm xl:h-[40px]"
+                        onClick={handleRegister}
+                    >
+                        Register
+                    </button>
+                    <p className="text-center text-dark-purple text-sm mt-3 lg:text-md xl:text-[16px] xl:mt-[20px]">
+                        Already have account?{" "}
+                        <Link
+                            href="/login"
+                            className="group transition duration-300 text-lavender"
+                        >
+                            <span className="font-bold relative">
+                                Login Now
+                                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-lavender transform origin-bottom scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></span>
+                            </span>
+                        </Link>
                     </p>
                 </div>
             </div>
-            <div className="flex flex-col mt-[50px] gap-4">
-                <Input
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email"
-                    onChange={handleOnChange}
-                    error={false}
-                    inputClassName="bg-pink-purple rounded-md py-2 px-3 w-full authInput focus:outline-none text-dark-purple"
-                />
-                <Input
-                    type="password"
-                    name="password"
-                    placeholder="Enter Your Password"
-                    onChange={handleOnChange}
-                    error={false}
-                    inputClassName="bg-pink-purple rounded-md py-2 px-3  w-full authInput focus:outline-none text-dark-purple"
-                />
-                <SelectOption
-                    options={languagesOptions}
-                    name="languageId"
-                    placeholder="Select Language"
-                    className="focus:outline-none"
-                    handleSelectChange={handleSelectChange}
-                />
-            </div>
-            <button
-                className="w-full bg-dark-purple py-3 font-bold rounded-md mt-[40px] text-pink-purple"
-                onClick={handleRegister}
-            >
-                Register
-            </button>
-            <p className="text-center mt-4 text-dark-purple">
-                Already have account?{" "}
-                <Link
-                    href="/login"
-                    className="group transition duration-300 text-lavender"
-                >
-                    <span className="font-bold relative ">
-                        Login Now
-                        <span className="absolute inset-x-0 bottom-0 h-0.5 bg-lavender transform origin-bottom scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></span>
-                    </span>
-                </Link>
-            </p>
         </div>
     );
 };

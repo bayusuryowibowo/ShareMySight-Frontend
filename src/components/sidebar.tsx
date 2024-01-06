@@ -7,9 +7,20 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "@/context/authContext";
 import { useContext } from "react";
 import Link from "next/link";
+import ErrorHandler from "@/utils/errorHandling";
 
 const Sidebar: FunctionComponent = () => {
     const { logout } = useContext(AuthContext);
+
+    const handleLogout = async (): Promise<void> => {
+        try {
+            localStorage.removeItem("username");
+            localStorage.removeItem("role");
+            logout();
+        } catch (error: any) {
+            ErrorHandler.handleError(error);
+        }
+    };
 
     return (
         <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-dark-purple border-r-[5px] border-grey-purple">
@@ -36,9 +47,7 @@ const Sidebar: FunctionComponent = () => {
                 <div className="border-2 mt-5"></div>
                 <li
                     className="mt-[15px] transition ease-in-out delay-50 text-white hover:bg-lavender p-4 rounded-md w-full flex flex-col items-center hover:cursor-pointer"
-                    onClick={() => {
-                        logout();
-                    }}
+                    onClick={handleLogout}
                 >
                     <LogoutIcon className="text-3xl" />
                     <div>Logout</div>

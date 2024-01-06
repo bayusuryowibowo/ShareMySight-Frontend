@@ -24,15 +24,15 @@ type AuthProviderProps = {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const router = useRouter();
     const cookies = useCookies();
-    const isAuthenticated = !!cookies.get("access_token");
+    const isAuthenticated = !!cookies.get("client_token");
 
     const login = (token: string) => {
-        cookies.set("access_token", token);
+        cookies.set("client_token", token);
         router.push("/video-call");
     };
 
     const logout = () => {
-        cookies.remove("access_token");
+        cookies.remove("client_token");
         router.push("/login");
     };
 

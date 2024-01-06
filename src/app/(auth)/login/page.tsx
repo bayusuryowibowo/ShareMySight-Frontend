@@ -31,7 +31,7 @@ export default function LoginPage() {
             const { data } = await apiClient.post("/login", userData);
             localStorage.setItem("username", data.data.username);
             localStorage.setItem("role", data.data.role);
-            login(data.data.token);
+            login(data.data?.token);
         } catch (error: any) {
             ErrorHandler.handleError(error);
         }

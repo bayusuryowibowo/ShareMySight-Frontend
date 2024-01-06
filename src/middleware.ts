@@ -7,7 +7,7 @@ const protectRoutesAuth = ["/login", "/register"];
 
 export default function middleware(req: NextRequest) {
     const cookies = getCookies();
-    const isAuthenticated = !!cookies.get("access_token");
+    const isAuthenticated = cookies.get("client_token");
 
     if (!isAuthenticated && protectedRoutes.includes(req.nextUrl.pathname)) {
         const absoluteURL = new URL("/login", req.nextUrl.origin);

@@ -24,8 +24,8 @@ const useFetch = (url: string) => {
             .catch((error) => {
                 ErrorHandler.handleError(error);
                 if (
-                    error.response.status === 401 &&
-                    error.response.data.message ===
+                    error?.response?.status === 401 &&
+                    error?.response?.data?.message ===
                         "Session expired. Please log in again."
                 ) {
                     logout();

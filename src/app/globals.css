@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
+}
+
+.eye {
+    background: #dee1fa;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    border-radius: 75% 0;
+    overflow: hidden;
+    animation-delay: 1s;
+    border: 10px solid #dee1fa;
+    height: 100px;
+    width: 100px;
+    border: 3px solid #dee1fa;
+}
+
+.ball {
+    background: #303866;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: eye-open-ball 3s forwards;
+    animation-delay: 1s;
+    border: 10px solid #dee1fa;
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.shut {
+    width: 300px;
+    height: 200px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    z-index: 999;
+}
+
+.shut span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #303866;
+    border-radius: 0 0 60% 60%;
+    animation: eye-open-lid 3s forwards;
+    animation-delay: 1s;
+}
+
+.overlay {
+    animation: scrollup 3s forwards;
+    animation-delay: 3s;
+}
+
+.blob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: #545ca0;
+    width: 50vmax;
+    z-index: -1;
+    animation: move 10s ease-in-out infinite;
+    transform-origin: 50% 50%;
+}
+
+@media (min-width: 480px) {
+    .eye {
+        height: 130px;
+        width: 130px;
+    }
+}
+
+@media (min-width: 780px) {
+    .eye {
+        height: 180px;
+        width: 180px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .eye {
+        height: 200px;
+        width: 200px;
+    }
+
+    .ball {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+@media (min-width: 1560px) {
+    .eye {
+        width: 220px;
+        height: 220px;
+    }
+
+    .ball {
+        width: 110px !important;
+        height: 110px !important;
+    }
+}
+
+@keyframes eye-open-ball {
+    0% {
+        transform: translate(-15%, -15%);
+    }
+    70% {
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes eye-open-lid {
+    0% {
+        height: 100%;
+    }
+    100% {
+        height: 0%;
+    }
+}
+
+@keyframes scrollup {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100vh);
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: scale(1) translate(10px, -10px);
+    }
+    38% {
+        transform: scale(0.8, 1) translate(80vw, 30vh) rotate(160deg);
+    }
+    40% {
+        transform: scale(0.8, 1) translate(80vw, 30vh) rotate(160deg);
+    }
+    78% {
+        transform: scale(1.3) translate(0vw, 50vh) rotate(-20deg);
+    }
+    80% {
+        transform: scale(1.3) translate(0vw, 50vh) rotate(-20deg);
+    }
+    100% {
+        transform: scale(1) translate(10px, -10px);
+    }
+}
+
+.h-chatbox {
+    max-height: calc(100vh - 90px); /* Adjust 90px as needed */
+}
+
+.h-chatbox-header {
+    height: 50px; /* Adjust 50px as needed */
+}
+
+.h-chatbox-textarea {
+    height: 100px; /* Adjust 100px as needed */
+}
+
+.scrollbar {
+    scrollbar-width: thin;
+}
+
+div#videos {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div#videos > video {
+    background: black;
+    width: 550px;
+    height: 100%;
+    display: block;
+    margin: 1em;
+}
+
+input.authInput::placeholder,
+select.authInput::placeholder {
+    color: #ae8bc0;
+}
+
+textArea::placeholder {
+    color: #545ca0;
+}

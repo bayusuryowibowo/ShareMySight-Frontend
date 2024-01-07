@@ -42,7 +42,7 @@ const Input: FunctionComponent<Props> = ({
                 disabled={disabled}
                 className={inputClassName}
             />
-            {error && <p className="error">Input field can't be empty!</p>}
+            {error && <p className="error">Input field can&apos;t be empty!</p>}
         </>
     );
 };

@@ -6,6 +6,7 @@ import useFetch from "@/hooks/useFetch";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SendIcon from "@mui/icons-material/Send";
 import { MoonLoader } from "react-spinners";
+import Image from "next/image";
 
 const Chat = () => {
     const [stompClient, setStompClient] = useState<CompatClient | null>(null);
@@ -94,7 +95,7 @@ const Chat = () => {
                                         className="flex gap-5 mb-5"
                                     >
                                         {el.user.role === "volunteer" ? (
-                                            <img
+                                            <Image
                                                 src="/volunteer.png"
                                                 alt="volunteer profile"
                                                 className="w-10 h-10"
@@ -125,7 +126,7 @@ const Chat = () => {
                                         </div>
 
                                         {el.user.role === "volunteer" ? (
-                                            <img
+                                            <Image
                                                 src="/volunteer.png"
                                                 alt="volunteer profile"
                                                 className="w-10 h-10"

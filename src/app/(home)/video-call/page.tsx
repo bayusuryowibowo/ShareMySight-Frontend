@@ -248,6 +248,8 @@ export default function RandomVideoCallPage() {
                             ref={myVideo}
                             autoPlay
                             className="h-full w-1/2"
+                            height={600}
+                            width={600}
                         />
                     ) : (
                         <div className="h-full w-1/2 bg-black rounded-tl-[10px]"></div>
@@ -259,7 +261,8 @@ export default function RandomVideoCallPage() {
                             playsInline
                             ref={userVideo}
                             autoPlay
-                            width="600"
+                            height={600}
+                            width={600}
                         />
                     ) : (
                         <div className="h-full w-1/2 bg-black rounded-tr-[10px]"></div>

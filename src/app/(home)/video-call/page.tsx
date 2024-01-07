@@ -53,9 +53,10 @@ export default function RandomVideoCallPage() {
 
     useEffect(() => {
         if (!socket && stream) {
-            const s = io(`https://sharemysight.productapic1.com:8081`, {
+            const s = io(`https://sharemysight.productapic1.com`, {
                 reconnection: false,
                 transports: ["websocket"],
+                withCredentials: true,
             });
 
             setSocket(s);

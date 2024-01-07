@@ -247,7 +247,7 @@ export default function RandomVideoCallPage() {
                             muted
                             ref={myVideo}
                             autoPlay
-                            className="h-full w-1/2"
+                            className="h-full w-1/2 z-50"
                             height={600}
                             width={600}
                         />
@@ -261,6 +261,7 @@ export default function RandomVideoCallPage() {
                             playsInline
                             ref={userVideo}
                             autoPlay
+                            className="h-full w-1/2 z-50"
                             height={600}
                             width={600}
                         />

@@ -83,9 +83,6 @@ export default function RandomVideoCallPage() {
                         });
 
                         peer.on("signal", (data) => {
-                            console.log("goingRandomCall : signal = ", data);
-                            console.log();
-
                             s.emit("goingRandomCall", {
                                 signal: data,
                                 to: from,
@@ -182,15 +179,11 @@ export default function RandomVideoCallPage() {
     }, [socket]);
 
     const callRandomUser = () => {
-        console.log("button call ketrigger");
-
         if (socket) {
             setIsCallMatching(true);
             const peer = new Peer({ initiator: true, trickle: false, stream });
 
             peer.on("signal", (data) => {
-                console.log("signal >>> ", data);
-
                 socket.emit("startRandomCall", {
                     signalData: data,
                     from: me,
@@ -199,7 +192,6 @@ export default function RandomVideoCallPage() {
             });
 
             peer.on("stream", (currentStream) => {
-                console.log("stream userVideo >>>", currentStream);
                 if (userVideo.current) {
                     userVideo.current.srcObject = currentStream;
                 }
@@ -208,8 +200,6 @@ export default function RandomVideoCallPage() {
             socket.on("callAccepted", handleCallAccepted);
 
             connectionRef.current = peer;
-        } else {
-            console.log("socket undefined");
         }
     };
 

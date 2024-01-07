@@ -8,7 +8,6 @@ import { AuthContext } from "@/context/authContext";
 import { useContext } from "react";
 import Link from "next/link";
 import ErrorHandler from "@/utils/errorHandling";
-import Image from "next/image";
 
 const Sidebar: FunctionComponent = () => {
     const { logout } = useContext(AuthContext);
@@ -26,7 +25,7 @@ const Sidebar: FunctionComponent = () => {
     return (
         <div className="h-screen w-[125px] p-4 shadow-custom z-10 bg-dark-purple border-r-[5px] border-grey-purple">
             <div className="text-center text-white">
-                <Image
+                <img
                     src="/logo.png"
                     alt="logo"
                     className="w-[50px] h-[50px] object-contain mx-auto"

@@ -8,7 +8,6 @@ import ErrorHandler from "@/utils/errorHandling";
 import { apiClient } from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
-import Image from "next/image";
 
 interface UserData {
     email: string;
@@ -73,7 +72,7 @@ const RegisterPage = () => {
     return (
         <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] shadow-md flex m-2 md:w-[70%] xl:p-4">
             <p className="border-r-2 flex justify-center items-center">
-                <Image
+                <img
                     src="welcome.png"
                     alt="welcome"
                     className="object-fit-cover hidden lg:block lg:w-[600px] xl:w-[700px] 2xl:w-[800px]"
@@ -103,7 +102,7 @@ const RegisterPage = () => {
                                     inputClassName="absolute inset-0 opacity-0"
                                     error={false}
                                 />
-                                <Image
+                                <img
                                     src="https://media-public.canva.com/JbmNs/MAFIVoJbmNs/1/tl.png"
                                     alt="Role: volunteer"
                                     className="object-cover h-[60px] mx-auto xl:h-[80px]"
@@ -127,11 +126,11 @@ const RegisterPage = () => {
                                     onChange={handleOnChange}
                                     className="absolute inset-0 opacity-0"
                                 />
-                                <Image
+                                <img
                                     src="https://media-public.canva.com/YQpyY/MAFdzDYQpyY/1/tl.png"
                                     alt="Role: need assistance"
                                     className="object-cover h-[60px] mx-auto xl:h-[80px]"
-                                ></Image>
+                                ></img>
                             </div>
                             <p className="text-center mt-2 text-dark-purple text-sm">
                                 I need assistance

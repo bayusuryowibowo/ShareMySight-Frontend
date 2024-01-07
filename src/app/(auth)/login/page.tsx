@@ -5,7 +5,6 @@ import { ChangeEvent, useContext, useState } from "react";
 import { apiClient } from "@/utils/axios";
 import ErrorHandler from "@/utils/errorHandling";
 import { AuthContext } from "@/context/authContext";
-import Image from "next/image";
 
 interface userData {
     email: string;
@@ -47,7 +46,7 @@ export default function LoginPage() {
             </div>
             <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] p-2 shadow-md flex mt-[30px] md:mt-[50px] lg:w-[70%] lg:mt-[65px] xl:p-3">
                 <p className="border-r-2 flex justify-center items-center">
-                    <Image
+                    <img
                         src="welcome.png"
                         alt="welcome"
                         className="object-fit-cover w-[400px] hidden sm:block lg:w-[500px] 2xl:w-[550px]"

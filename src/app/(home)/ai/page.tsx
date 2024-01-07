@@ -7,7 +7,6 @@ import { apiClient } from "@/utils/axios";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { MoonLoader, PulseLoader } from "react-spinners";
-import Image from "next/image";
 
 interface Request {
     text: string;
@@ -128,7 +127,7 @@ const AIChat = () => {
                             <div key={index}>
                                 <div className="flex gap-5 mb-5 justify-end">
                                     <div className="bg-pink-purple p-2 rounded-tl-[10px] rounded-bl-[10px] rounded-br-[10px] flex flex-col max-w-[250px]">
-                                        <Image
+                                        <img
                                             src={el?.imageUrl}
                                             className="max-h-[250px]"
                                             style={{ objectFit: "cover" }}
@@ -142,7 +141,7 @@ const AIChat = () => {
                                 </div>
 
                                 <div className="flex gap-5 mb-5">
-                                    <Image
+                                    <img
                                         className="_7_i_XA w-10 h-10"
                                         crossOrigin="anonymous"
                                         src="https://media-public.canva.com/N_D8M/MAFgqzN_D8M/1/tl.png"

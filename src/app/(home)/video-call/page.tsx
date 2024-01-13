@@ -243,9 +243,9 @@ export default function RandomVideoCallPage() {
                 muted
                 ref={myVideo}
                 autoPlay
-                className="h-full w-1/2 z-50"
                 height={600}
                 width={600}
+                className="z-10"
             />
             <div className="shadow-inner h-full rounded-[20px] border-2 border-solid flex flex-col bg-midnight-blue">
                 <div className=" flex flex-row gap-5 h-full p-[25px] pb-0">

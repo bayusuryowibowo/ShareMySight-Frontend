@@ -6,25 +6,10 @@ export default function AuthLayout({
     return (
         <>
             <div className="h-screen overflow-hidden">
-                <div className="flex min-h-screen flex-col items-center justify-between p-24 bg-dark-purple h-screen overflow-hidden">
-                    <div className="eye left-[25%] lg:left-[30%] 2xl:left-[34%]">
-                        <div className="shut">
-                            <span></span>
-                        </div>
-                        <div className="ball"></div>
-                    </div>
-                    <div className="eye left-[75%] lg:left-[70%] 2xl:left-[66%]">
-                        <div className="shut">
-                            <span></span>
-                        </div>
-                        <div className="ball"></div>
-                    </div>
-                </div>
                 <div
                     className={
                         "w-full flex flex-col items-center justify-center bg-pale-purple overlay"
                     }
-                    style={{ height: "100vh" }}
                 >
                     <div className="blob">
                         <svg

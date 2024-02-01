@@ -70,7 +70,7 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] shadow-md flex m-2 md:w-[70%] xl:p-4">
+        <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] shadow-md flex m-2 md:w-[70%] xl:p-4 z-10">
             <p className="border-r-2 flex justify-center items-center">
                 <img
                     src="welcome.png"

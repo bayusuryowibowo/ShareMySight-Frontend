@@ -39,12 +39,12 @@ export default function LoginPage() {
 
     return (
         <>
-            <div className="absolute top-[50px] lg:top-[40px]">
+            <div className="absolute top-[50px] lg:top-[40px] z-10">
                 <div className="font-bold text-4xl text-dark-purple lg:text-4xl xl:text-[50px]">
                     ShareMySight
                 </div>
             </div>
-            <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] p-2 shadow-md flex mt-[30px] md:mt-[50px] lg:w-[70%] lg:mt-[65px] xl:p-3">
+            <div className="bg-white w-[90%] m-h-3/5 rounded-[30px] p-2 shadow-md flex mt-[30px] md:mt-[50px] lg:w-[70%] lg:mt-[65px] xl:p-3 z-10">
                 <p className="border-r-2 flex justify-center items-center">
                     <img
                         src="welcome.png"

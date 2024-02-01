@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ShareMySight-Backend
 
-## Getting Started
+Welcome to ShareMySight - Connecting the Visually Impaired with Volunteers!
 
-First, run the development server:
+Backend Repo - [link](https://github.com/BryMat24/ShareMySight-Backend)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Table of Contents
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+-   [Introduction](#introduction)
+-   [Main Features](#main-features)
+-   [Technologies Used](#technologies-used)
+-   [Installation](#installation)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Introduction
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+ShareMySight is a revolutionary application designed to bridge the gap between visually impaired individuals and volunteers who are eager to assist. The app leverages voice calls, chat assistance, and a generative AI to enhance the visual experience for those with impaired vision.
 
-## Learn More
+## Main Features
 
-To learn more about Next.js, take a look at the following resources:
+1. **Connect with Volunteers:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    - Easily connect with volunteers through voice calls for real-time assistance.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. **Chat Assistant:**
 
-## Deploy on Vercel
+    - Engage in text-based conversations with volunteers who can provide support, answer questions, and offer guidance.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Generative AI Image Descriptions:**
+    - Utilize our advanced generative AI to receive detailed descriptions of images, enhancing the understanding of visual content.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Technologies Used
+
+-   **Voice Calls:** WebRTC
+-   **Chat Assistance:** WebSocket
+-   **Generative AI:** Open AI Vision API
+-   **User Interface:** NextTS, TailwindCSS
+-   **Backend:** Springboot
+-   **Database:** MongoDB
+-   **Authentication:** JSON Web Tokens (JWT)
+-   **Image Upload:** AWS S3
+
+## Application Architecture
+
+![Example Image](./doc/architecture.png)
+
+## Database Schema
+
+![Example Image](./doc/schema.png)
+
+## Demo Overview
+
+![Example Image](./doc/call.png)
+![Example Image](./doc/realtime-chat.png)
+![Example Image](./doc/ai-chat.png)
